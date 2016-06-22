@@ -61,6 +61,7 @@
             <button type="button" class="btn btn-default btn-block" ng-click="generateMap()">Generate Map</button>
             <button type="button" class="btn btn-default btn-block" ng-click="startRun()">Start Simulation</button>
             <button type="button" class="btn btn-default btn-block" ng-click="stopRun()">Stop Simulation</button><br/>
+            <label><input type="checkbox" ng-model="algorithm.centerInfection"> - Inject from Center</label><br/>
             <label><input type="checkbox" ng-model="algorithm.voronoi" ng-click="refreshGraph()"> - Voronoi</label><br/>
             <label><input type="checkbox" ng-model="algorithm.delaunay" ng-click="refreshGraph()"> - Delaunay</label><br/>
             <label><input type="checkbox" ng-model="algorithm.pointers" ng-click="refreshGraph()"> - Points</label><br/>
