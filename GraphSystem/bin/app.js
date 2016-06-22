@@ -1,15 +1,42 @@
-angular.module('app' , [])
+angular.module('app' , ['chart.js']);
+angular.module('app').config(['ChartJsProvider', function (ChartJsProvider) {
+    // Configure all charts
+    ChartJsProvider.setOptions({
+//      colours: ['#FF5252', '#FF8A80'],
+//      responsive: false
+//        scaleShowLabels: false
+      //scaleOverride: true,
+      // Number - The number of steps in a hard coded scale
+      //scaleSteps: 10,
+    });
+    // Configure all line charts
+    ChartJsProvider.setOptions('Line', {
+
+    });
+  }])
 .controller('HomeController', function ($attrs, $interval, $scope) {
   $scope.initDensity = parseInt(500);
   $scope.initDistribution = parseInt(10);
   $scope.dividePercent = parseInt(70);
   $scope.flipPercent = parseInt(30);
   $scope.stepcounter = 0;
+
+
+  // chart Preperation
+  $scope.lbl_pie = ["Dead", "Alive"];
+  var population = (parseInt($scope.initDistribution) * parseInt($scope.initDensity) / 100);
+  $scope.ds_pie = [population, parseInt($scope.initDensity) - population];
+  $scope.lbl_line = [0];
+  // i know ... scarry....
+  $scope.series = ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Population' ];
+  $scope.ds_line = [[population]];
+
+
   $scope.algorithm = {
     voronoi : true,
     delaunay : false,
     pointers : true,
-    centerInfection : true,
+    centerInfection : false,
   }
   var stop;
   // Canvas Context
@@ -26,6 +53,8 @@ angular.module('app' , [])
 
   $scope.generateMap =  function() {
       // initialize the map - Create a Random Dot Matrix
+      population = 0;
+      $scope.stepcounter = 0;
       particles = new Array($scope.initDensity);
       for (var i = 0; i < parseInt($scope.initDensity); ++i) {
           let x2 = Math.random() * width;
@@ -46,20 +75,20 @@ angular.module('app' , [])
   }
 
   function getCellInfectionState(x2, y2) {
-    var cellType = 'healthy';
     let maxDistance = (width * (parseInt($scope.initDistribution) / 100));
     let x1 = width / 2;
     let y1 = height / 2;
     if($scope.algorithm.centerInfection === true) {
-      var d = Math.sqrt( (x2-=x1)*x2 + (y2-=y1)*y2 );
-      if(d < maxDistance) {
-        cellType = 'infected';
+      if(Math.sqrt( (x2-=x1)*x2 + (y2-=y1)*y2 ) < maxDistance) {
+        population++;
+        return 'infected';
       }
-
-    } else if (Math.random() < (parseInt($scope.initDistribution) / 100)) {
-      cellType = 'infected';
     }
-    return cellType;
+    if (Math.random() < (parseInt($scope.initDistribution) / 100)) {
+      population++;
+      return 'infected';
+    }
+    return 'healthy';
   }
 
   $scope.startRun = function() {
@@ -73,10 +102,9 @@ angular.module('app' , [])
         // TO DO IF THE CELLS COULD MOVE
         // the topology need to be refreshed!
         // ----------------------------------------
-
-
         // topology = computeTopology(voronoi(particles)); // for recreating the topology if cell realy should move some time
         // VoronoiGeo = topojson.mesh(topology, topology.objects.voronoi, function(a, b) { return a !== b; });  // required ? not sure
+
         // Step Logic
         step(dp, fc);
         // Step Counter
@@ -84,12 +112,11 @@ angular.module('app' , [])
 
         if($scope.stepcounter % 100 == 0) {
           reDrawGraph();
-          /* Statistics - not iplemented yet
-          var population = system.getPopulation()
+          /* Statistics - not iplemented yet */
           $scope.ds_line[0].push(population);
           $scope.lbl_line.push($scope.stepcounter / 100);
-          $scope.ds_pie = [population, mapsize - population];
-           */
+          $scope.ds_pie = [population, parseInt($scope.initDensity) - population];
+
           }
 
       }, 0); // ms till next Step.
@@ -122,6 +149,7 @@ angular.module('app' , [])
           var direction = _.random(0, neighbors.length - 1);
           if (ran <= dividePercentCell) {
                 particles[neighbors[direction]].cellType = 'divided';
+                population++;
           }
           if(ran <= dividePercentCell + flipPercentCell && ran > dividePercentCell ) {
                 particles[currentCell].cellType = 'healthy';
