@@ -23,11 +23,14 @@
                   <input type="text" name="input" ng-model="dividePercent" min="1" max="100" required size="2">
                     <label> % - divide percent</label><br>
                   <input type="text" name="input" ng-model="flipPercent" min="1" max="100" required size="2">
-                    <label> % - flip percent</label><br><br>
+                    <label> % - flip percent</label><br>
+                  <input type="text" name="input" ng-model="updateCycle" min="1" max="100" required size="2">
+                    <label> u - updateCycle</label><br><br>
                   <button type="button" class="btn btn-default btn-block" ng-click="generateMap()">Generate Map</button>
                   <button type="button" class="btn btn-default btn-block" ng-click="startRun()">Start Simulation</button>
                   <button type="button" class="btn btn-default btn-block" ng-click="stopRun()">Stop Simulation</button><br/>
                   <input type="checkbox" ng-model="algorithm.centerInfection"> <label> - Inject from Center</label><br/>
+                  <input type="checkbox" ng-model="algorithm.dynamicSystem"> <label> - dynamic Model</label><br/>
                   <input type="checkbox" ng-model="algorithm.voronoi" ng-click="refreshGraph()"> <label> - Voronoi</label><br/>
                   <input type="checkbox" ng-model="algorithm.delaunay" ng-click="refreshGraph()"> <label> - Delaunay</label><br/>
                   <input type="checkbox" ng-model="algorithm.pointers" ng-click="refreshGraph()"> <label> - Points</label><br/>
