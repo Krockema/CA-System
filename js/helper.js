@@ -1,6 +1,12 @@
 function roundToTwo(num) {
     return +(Math.round(num + "e+2")  + "e-2");
 }
+function saveLogToFile(blob, filename)
+{
+  var blob = new Blob([blob], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, filename + ".txt");
+}
+
 function computeTopology(diagram) {
   var cells = diagram.cells,
       x0 = diagram.extent[0][0],

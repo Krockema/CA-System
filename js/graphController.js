@@ -240,8 +240,12 @@ app.controller('graphController', function ($interval, $scope) {
     // calc Area all given Poligons and return its size
     // not sure if correct.
     // var area = calcPolygonArea2(topojson.mesh(topology, topology.objects.voronoi));
-
 }
+
+// save a file
+$scope.saveFile = function() {
+  saveLogToFile("Hello, world!", "CA_TEXTFILE");
+};
 
 
 // Drawing Functions.

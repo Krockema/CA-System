@@ -32,6 +32,9 @@ app.controller('caController', function ($interval, $scope) {
     $scope.series = ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Population' ];
     $scope.ds_line = [[initialBlock]];
 
+    $scope.saveFile = function() {
+      saveLogToFile("Hello, world!", "CA_TEXTFILE");
+    };
 
     $scope.runStepByStep = function() {
       // Don't start a new Run if the Old is still active
