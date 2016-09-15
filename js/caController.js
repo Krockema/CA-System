@@ -48,8 +48,8 @@ app.controller('caController', function ($interval, $scope) {
         system.step(dp, fc);
         $scope.stepcounter = $scope.stepcounter + 1;
 
-        if($scope.stepcounter % 100 == 0) {
-          var population = system.getPopulation()
+        if($scope.stepcounter % 100 === 0) {
+          var population = system.getPopulation();
           $scope.ds_line[0].push(population);
           $scope.lbl_line.push($scope.stepcounter / 100);
           $scope.ds_pie = [population, mapsize - population];
@@ -66,7 +66,7 @@ app.controller('caController', function ($interval, $scope) {
 
     $scope.resetMap = function() {
             map.map.reset();
-    }
+    };
 
     map.addRandomObstacles = () => {
         //map.map.reset();
@@ -89,7 +89,7 @@ app.controller('caController', function ($interval, $scope) {
 
     map.mouseOverCell = (cell, event) => {
         if (event.buttons == 1) {
-            this.clickOnCell(cell)
+            this.clickOnCell(cell);
         }
     };
 });
