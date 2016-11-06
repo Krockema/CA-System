@@ -74,6 +74,12 @@ app.controller('caController', function ($interval, $scope) {
         map.map.addRandomObstacles((map.map.cols * map.map.rows) * value);
     };
 
+    map.addObstaclesFromCenter = () => {
+        //map.map.reset();
+        var value = parseInt($scope.initPercent)/100;
+        map.map.addObstaclesFromCenter((map.map.cols * map.map.rows) * value);
+    };
+
     map.clickOnCell = (cell) => {
         switch (cell.type) {
         case CellType.Blocked:

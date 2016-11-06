@@ -107,6 +107,34 @@ class Map {
         }
     }
 
+    addObstaclesFromCenter(count)
+    {
+      /*  TODO: Implement from cellinsert from Center
+      /*
+      /******************************
+        var freeCells = this.cells.reduce(
+            (prev, curr) => {
+                if (curr.isFree) prev++;
+                return prev;
+            }, 0);
+
+        if (count > freeCells)
+            count = freeCells;
+
+        for (var i = 0; i < count; i++) {
+            var row =
+            var col =
+
+            if (this.grid[row][col].isFree) {
+                this.grid[row][col].type = CellType.Blocked;
+                this.hasChanged(this.grid[row][col]);
+            } else {
+                i--;
+            }
+        }
+        */
+    }
+
     getLivingCellsCount() {
         return this.cells.find(cell => cell.isFree).length;
     }
