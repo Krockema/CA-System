@@ -35,7 +35,31 @@ app.controller('caController', function ($interval, $scope) {
 
     
     $scope.saveFile = function() {
-      saveLogToFile("Hello, world!", "CA_TEXTFILE");
+        // saveLogToFile("Hello, world!", "CA_TEXTFILE");
+        
+        var svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var DOMURL = self.URL || self.webkitURL || self;
+        var img = new Image();
+        var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+        var url = DOMURL.createObjectURL(svg);
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+            var png = canvas.toDataURL("image/png");
+            var png_con = document.getElementById('png-container');
+            png_con.innerHTML = '<img src="'+png+'"/>';
+            DOMURL.revokeObjectURL(png);
+        };
+        img.src = url;
+        
+        // draw to canvas...
+        canvas.toBlob(function(blob) {
+            saveAs(blob, "CA_step_" + $scope.stepcounter + ".png");
+        });
+        
+        
     };
 
     $scope.runStepByStep = function() {
@@ -52,11 +76,14 @@ app.controller('caController', function ($interval, $scope) {
 
         if($scope.stepcounter % 100 === 0) {
             var population = system.getPopulation();
-            logstring += map.map.getBlockedCellsCount() + ";" + map.map.getLivingCellsCount() + ";\r\n";
-            console.log(logstring + "\r\n" + map.map.getOuterBoundaries() + "\r\n")
             $scope.ds_line[0].push(population);
             $scope.lbl_line.push($scope.stepcounter / 100);
             $scope.ds_pie = [population, mapsize - population];
+            // Logging options
+            logstring = "step: " + $scope.stepcounter + " blocked: " + map.map.getBlockedCellsCount() + " free: " + map.map.getLivingCellsCount() + ";\r\n";
+            console.log(logstring + map.map.getOuterBoundaries() + "\r\n");
+            $scope.saveFile();
+            
         }
       }, 10); // ms till next Step.
     };

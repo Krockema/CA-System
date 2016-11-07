@@ -8,13 +8,16 @@
     <div class="row" >
       <div class="col-xs-7">
         <!--map content-->
-        <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
+        <svg id="cellgrid" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+             ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
             <g ng-repeat="row in map.map.grid">
                 <rect ng-repeat="cell in row" ng-attr-x="{{cell.position.x * map.cellSize}}" ng-attr-y="{{cell.position.y * map.cellSize}}" ng-attr-width="{{map.cellSize}}" ng-attr-height="{{map.cellSize}}"
                       ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,start:cell.isStart, goal:cell.isGoal}"
                    ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)" ng-attr-style="fill:{{cell.color}};"></rect>
             </g>
         </svg>
+        <div id="png-container"></div>
+        <canvas id="canvas"></canvas>  
       </div>
       <div class="col-xs-5">
         <!-- form content-->

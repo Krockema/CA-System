@@ -153,20 +153,27 @@ class Map {
         // better to --> run throu reduced map
         var lowest_x = this.rows;
         var lowest_y = this.cols;
+        var lpx;
+        var lpy;
         var heighest_x = 0;
         var heighest_y = 0;
+        var hpx;
+        var hpy;
         
         this.cells.reduce(
             (prev, curr) => {
                 if (!curr.isFree) {
-                    if(lowest_x > curr.position.x) { lowest_x = curr.position.x; }
-                    if(lowest_y > curr.position.y) { lowest_y = curr.position.y; }
-                    if(heighest_x < curr.position.x) { heighest_x = curr.position.x }
-                    if(heighest_y < curr.position.y) { heighest_y = curr.position.y }                        
+                    if(lowest_x > curr.position.x) { lpx = [curr.position.x,curr.position.y]; lowest_x = curr.position.x; }
+                    if(lowest_y > curr.position.y) { lpy = [curr.position.x,curr.position.y]; lowest_y = curr.position.y; }
+                    if(heighest_x < curr.position.x) { hpx = [curr.position.x,curr.position.y]; heighest_x = curr.position.x; }
+                    if(heighest_y < curr.position.y) { hpy = [curr.position.x,curr.position.y]; heighest_y = curr.position.y; }                        
                 };
             }, 0);
         
-        return lowest_x + ";" + lowest_y + ";" + heighest_x + ";" + heighest_y + ";";
+        return "low_point_x(" + lpx[0] + ", " + lpx[1] + ")\r\n" +
+                "low_point_y(" + lpy[0] + ", " + lpy[1] + ")\r\n" +
+                "hei_point_x(" + hpx[0] + ", " + hpx[1] + ")\r\n" +
+                "hei_point_y(" + hpy[0] + ", " + hpy[1] + ")\r\n";
     }
     
     
