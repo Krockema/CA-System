@@ -85,11 +85,7 @@ class Map {
 
     addRandomObstacles(count) {
         //apply some magic to count free cells
-        var freeCells = this.cells.reduce(
-            (prev, curr) => {
-                if (curr.isFree) prev++;
-                return prev;
-            }, 0);
+        var freeCells = this.getLivingCellsCount();
 
         if (count > freeCells)
             count = freeCells;
@@ -136,12 +132,48 @@ class Map {
     }
 
     getLivingCellsCount() {
-        return this.cells.find(cell => cell.isFree).length;
+        return this.cells.reduce(
+            (prev, curr) => {
+                if (curr.isFree) prev++;
+                return prev;
+            }, 0);
     }
 
+    getBlockedCellsCount() {
+        return this.cells.reduce(
+            (prev, curr) => {
+                if (!curr.isFree) prev++;
+                return prev;
+            }, 0);
+
+    }
+    
+    getOuterBoundaries() {
+        
+        // better to --> run throu reduced map
+        var lowest_x = this.rows;
+        var lowest_y = this.cols;
+        var heighest_x = 0;
+        var heighest_y = 0;
+        
+        this.cells.reduce(
+            (prev, curr) => {
+                if (!curr.isFree) {
+                    if(lowest_x > curr.position.x) { lowest_x = curr.position.x; }
+                    if(lowest_y > curr.position.y) { lowest_y = curr.position.y; }
+                    if(heighest_x < curr.position.x) { heighest_x = curr.position.x }
+                    if(heighest_y < curr.position.y) { heighest_y = curr.position.y }                        
+                };
+            }, 0);
+        
+        return lowest_x + ";" + lowest_y + ";" + heighest_x + ";" + heighest_y + ";";
+    }
+    
+    
+    
   	getRandomCell() {
   		var row = _.random(0, this.rows - 1);
-      var col = _.random(0, this.cols - 1);
+        var col = _.random(0, this.cols - 1);
   		return this.grid[row][col];
   	}
 
@@ -165,7 +197,7 @@ class Map {
         }
     }
     reset() {
-        this.cells.filter(cell => cell.isVisited || cell.isCurrent || cell.isGoal).forEach(cell => {
+        this.cells.filter(cell => cell.isVisited || cell.isCurrent || cell.isGoal || cell.isBlocked).forEach(cell => {
             cell.type = CellType.Free;
             cell.color = undefined;
         })

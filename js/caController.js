@@ -16,7 +16,8 @@ app.controller('caController', function ($interval, $scope) {
     var dividecounter;
     var mapsize = map.map.cols * map.map.rows;
     var initialBlock = mapsize * 0.1;
-
+    var logstring = "";
+    
     $scope.lbl_pie = ["Dead", "Alive"];
     $scope.ds_pie = [initialBlock, mapsize - initialBlock];
 
@@ -32,6 +33,7 @@ app.controller('caController', function ($interval, $scope) {
     $scope.series = ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Population' ];
     $scope.ds_line = [[initialBlock]];
 
+    
     $scope.saveFile = function() {
       saveLogToFile("Hello, world!", "CA_TEXTFILE");
     };
@@ -49,11 +51,13 @@ app.controller('caController', function ($interval, $scope) {
         $scope.stepcounter = $scope.stepcounter + 1;
 
         if($scope.stepcounter % 100 === 0) {
-          var population = system.getPopulation();
-          $scope.ds_line[0].push(population);
-          $scope.lbl_line.push($scope.stepcounter / 100);
-          $scope.ds_pie = [population, mapsize - population];
-          }
+            var population = system.getPopulation();
+            logstring += map.map.getBlockedCellsCount() + ";" + map.map.getLivingCellsCount() + ";\r\n";
+            console.log(logstring + "\r\n" + map.map.getOuterBoundaries() + "\r\n")
+            $scope.ds_line[0].push(population);
+            $scope.lbl_line.push($scope.stepcounter / 100);
+            $scope.ds_pie = [population, mapsize - population];
+        }
       }, 10); // ms till next Step.
     };
 
@@ -66,6 +70,7 @@ app.controller('caController', function ($interval, $scope) {
 
     $scope.resetMap = function() {
             map.map.reset();
+            logstring = "";
     };
 
     map.addRandomObstacles = () => {

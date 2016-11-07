@@ -6,7 +6,7 @@
     </div>
   </div>
     <div class="row" >
-      <div class="col-xs-8">
+      <div class="col-xs-7">
         <!--map content-->
         <svg ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
             <g ng-repeat="row in map.map.grid">
@@ -16,7 +16,7 @@
             </g>
         </svg>
       </div>
-      <div class="col-xs-4">
+      <div class="col-xs-5">
         <!-- form content-->
         <form name="controllerForm">
             Current step: {{stepcounter}}<br><br>
@@ -30,12 +30,13 @@
               <span class="error" ng-show="controllerForm.input.$error.required">
                 Required!</span>
             </div>
+              <button type="button" class="btn btn-default btn-block" data-ng-click="runStepByStep()">Start</button>
+              <button type="button" class="btn btn-default btn-block" data-ng-click="stopRun()">Stop</button>
               <input type="button" class="btn btn-default btn-block" ng-click="map.addRandomObstacles()" value="Add random blocks" />
               <input type="button" class="btn btn-default btn-block" ng-click="map.addObstaclesFromCenter()" value="Add from Center" />
               <button type="button" class="btn btn-default btn-block" data-ng-click="resetMap()">Reset</button>
-              <button type="button" class="btn btn-default btn-block" data-ng-click="runStepByStep()">Divide</button>
-              <button type="button" class="btn btn-default btn-block" data-ng-click="stopRun()">Stop</button>
-              <button type="button" class="btn btn-default btn-block" ng-click="saveFile()">Save Results</button><br/>
+              <button type="button" class="btn btn-default btn-block" ng-click="saveFile()">Save Results</button>
+              <br/>
         </form>
       </div>
   </div>
