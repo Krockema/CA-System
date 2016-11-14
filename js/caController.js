@@ -3,12 +3,12 @@ app.controller('caController', function ($interval, $scope) {
     var map = this;
     $scope.map = map;
     map.name = "CellSystem";
-    $scope.rows = 30;
-    $scope.cols = 30;
+    $scope.rows = 50;
+    $scope.cols = 50;
     map.map = new Map($scope.cols, $scope.rows);
     // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
     // Map Preperation
-    map.cellSize = 15;
+    map.cellSize = 10;
     map.widthPx = map.map.cols * map.cellSize;
     map.heightPx = map.map.rows * map.cellSize;
     var stop;  // intervallbinding to stop
@@ -17,12 +17,12 @@ app.controller('caController', function ($interval, $scope) {
     var mapsize = map.map.cols * map.map.rows;
     var initialBlock = mapsize * 0.1;
     var logstring = "";
-    
+
     $scope.lbl_pie = ["Dead", "Alive"];
     $scope.ds_pie = [initialBlock, mapsize - initialBlock];
 
     // chart Preperation
-    $scope.initPercent = parseInt(10);
+    $scope.initPercent = parseInt(5);
     $scope.dividePercent = parseInt(70);
     $scope.flipPercent = parseInt(30);
     $scope.stepcounter = 0;
@@ -33,10 +33,12 @@ app.controller('caController', function ($interval, $scope) {
     $scope.series = ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Population' ];
     $scope.ds_line = [[initialBlock]];
 
-    
+
     $scope.saveFile = function() {
+
+
         // saveLogToFile("Hello, world!", "CA_TEXTFILE");
-        
+        /*
         var svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
 
         var canvas = document.getElementById("canvas");
@@ -53,13 +55,16 @@ app.controller('caController', function ($interval, $scope) {
             DOMURL.revokeObjectURL(png);
         };
         img.src = url;
-        
+
         // draw to canvas...
         canvas.toBlob(function(blob) {
             saveAs(blob, "CA_step_" + $scope.stepcounter + ".png");
         });
-        
-        
+        */
+        var svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
+        saveLogToFile(svgString, "CA_step_" + $scope.stepcounter + ".svg");
+
+
     };
 
     $scope.runStepByStep = function() {
@@ -82,8 +87,8 @@ app.controller('caController', function ($interval, $scope) {
             // Logging options
             logstring = "step: " + $scope.stepcounter + " blocked: " + map.map.getBlockedCellsCount() + " free: " + map.map.getLivingCellsCount() + ";\r\n";
             console.log(logstring + map.map.getOuterBoundaries() + "\r\n");
-            $scope.saveFile();
-            
+            //$scope.saveFile();
+
         }
       }, 10); // ms till next Step.
     };
@@ -109,7 +114,7 @@ app.controller('caController', function ($interval, $scope) {
     map.addObstaclesFromCenter = () => {
         //map.map.reset();
         var value = parseInt($scope.initPercent)/100;
-        map.map.addObstaclesFromCenter((map.map.cols * map.map.rows) * value);
+        map.map.addObstaclesFromCenter(parseInt($scope.initPercent), value);
     };
 
     map.clickOnCell = (cell) => {
