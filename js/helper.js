@@ -1,10 +1,19 @@
 function roundToTwo(num) {
     return +(Math.round(num + "e+2")  + "e-2");
 }
-function saveLogToFile(blob, filename)
-{
-  var blob = new Blob([blob], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, filename + ".txt");
+
+function saveLogToFile(blob, filename) {
+  var blobt = new Blob([blob], {type: "text/plain;charset=utf-8"});
+  saveAs(blobt, filename);
+
+  //
+
+//  var canvas = document.getElementById("my-canvas"), ctx = canvas.getContext("2d");
+// draw to canvas...
+//  canvas.toBlob(function(blob) {
+//    saveAs(blob, "pretty image.png");
+//});
+
 }
 
 function computeTopology(diagram) {
@@ -22,8 +31,7 @@ function computeTopology(diagram) {
       voronoi: {
         type: "GeometryCollection",
         geometries: cells.map(function(cell) {
-          var cell,
-              site = cell.site,
+          var site = cell.site,
               halfedges = cell.halfedges,
               cellArcs = [],
               clipArc;
@@ -75,6 +83,20 @@ function computeTopology(diagram) {
   };
 }
 
+function lineDistance( point1, point2 )
+{
+  var xs = 0;
+  var ys = 0;
+
+  xs = point2.x - point1.x;
+  xs = xs * xs;
+
+  ys = point2.y - point1.y;
+  ys = ys * ys;
+
+  return Math.sqrt( xs + ys );
+}
+
 function calcPolygonArea2(v) {
     var total = 0;
     for (var k = 0; k < v.coordinates.length; k++) {
@@ -102,7 +124,7 @@ function calcPolygonArea(v) {
   for (var k = 0; k < v.coordinates.length; k++) {
     var cellTotal = 0;
     var vertices = v.coordinates[k];
-    cellTotal = polygonArea(vertices)
+    cellTotal = polygonArea(vertices);
     console.log('cell total: ' + Math.abs(cellTotal));
     total = total + Math.abs(cellTotal);
   }

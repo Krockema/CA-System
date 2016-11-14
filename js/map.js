@@ -44,6 +44,7 @@ class Map {
           []
         ];
         this.cells = [];
+        this.center = new Position(0,0);
 
         this.initializeGrid();
     }
@@ -103,11 +104,17 @@ class Map {
         }
     }
 
-    addObstaclesFromCenter(count)
+    addObstaclesFromCenter(count, initPercent)
     {
       /*  TODO: Implement from cellinsert from Center
       /*
       /******************************
+      */
+      count =  Math.round(this.cells.length * initPercent);
+
+      var square_x = Math.round(Math.sqrt(count * 2));
+      var square_y = Math.round(Math.sqrt(count * 2));
+
         var freeCells = this.cells.reduce(
             (prev, curr) => {
                 if (curr.isFree) prev++;
@@ -118,8 +125,8 @@ class Map {
             count = freeCells;
 
         for (var i = 0; i < count; i++) {
-            var row =
-            var col =
+            var row = Math.round((this.rows - square_x) / 2 + _.random(0, square_x - 1));
+            var col = Math.round((this.rows - square_y) / 2 + _.random(0, square_y - 1));
 
             if (this.grid[row][col].isFree) {
                 this.grid[row][col].type = CellType.Blocked;
@@ -128,7 +135,7 @@ class Map {
                 i--;
             }
         }
-        */
+
     }
 
     getLivingCellsCount() {
@@ -147,9 +154,9 @@ class Map {
             }, 0);
 
     }
-    
+
     getOuterBoundaries() {
-        
+
         // better to --> run throu reduced map
         var lowest_x = this.rows;
         var lowest_y = this.cols;
@@ -159,25 +166,41 @@ class Map {
         var heighest_y = 0;
         var hpx;
         var hpy;
-        
+
         this.cells.reduce(
             (prev, curr) => {
                 if (!curr.isFree) {
-                    if(lowest_x > curr.position.x) { lpx = [curr.position.x,curr.position.y]; lowest_x = curr.position.x; }
-                    if(lowest_y > curr.position.y) { lpy = [curr.position.x,curr.position.y]; lowest_y = curr.position.y; }
-                    if(heighest_x < curr.position.x) { hpx = [curr.position.x,curr.position.y]; heighest_x = curr.position.x; }
-                    if(heighest_y < curr.position.y) { hpy = [curr.position.x,curr.position.y]; heighest_y = curr.position.y; }                        
+                    if(lowest_x > curr.position.x) { lpx = new Position(curr.position.x,curr.position.y); lowest_x = curr.position.x; }
+                    if(lowest_y > curr.position.y) { lpy = new Position(curr.position.x,curr.position.y); lowest_y = curr.position.y; }
+                    if(heighest_x < curr.position.x) { hpx = new Position(curr.position.x,curr.position.y); heighest_x = curr.position.x; }
+                    if(heighest_y < curr.position.y) { hpy = new Position(curr.position.x,curr.position.y); heighest_y = curr.position.y; }
                 };
             }, 0);
-        
-        return "low_point_x(" + lpx[0] + ", " + lpx[1] + ")\r\n" +
-                "low_point_y(" + lpy[0] + ", " + lpy[1] + ")\r\n" +
-                "hei_point_x(" + hpx[0] + ", " + hpx[1] + ")\r\n" +
-                "hei_point_y(" + hpy[0] + ", " + hpy[1] + ")\r\n";
+
+        this.center = new Position(
+          ((lpx.x + hpx.x + lpy.x) / 3),
+          ((lpx.y + hpx.y + lpy.y) / 3));
+        if(lineDistance(hpy, this.center) >= lineDistance(lpx, this.center))
+        { this.center.x = (lpx.x + hpx.x + hpy.x) / 3;
+          this.center.y = (lpx.y + hpx.y + hpy.y) / 3; }
+        if(lineDistance(lpy, this.center) >= lineDistance(lpx, this.center))
+        { this.center.x = (lpx.x + lpy.x + hpy.x) / 3;
+          this.center.y = (lpx.y + lpy.y + hpy.y) / 3; }
+        if(lineDistance(hpx, this.center) >= lineDistance(lpx, this.center))
+        { center.x = (hpx.x + lpy.x + hpy.x) / 3;
+          center.y = (hpx.y + lpy.y + hpy.y) / 3; }
+
+
+
+        return "low_point_x(" + lpx.x + ", " + lpx.y + ")\r\n" +
+                "low_point_y(" + lpy.x + ", " + lpy.y + ")\r\n" +
+                "hei_point_x(" + hpx.x + ", " + hpx.y + ")\r\n" +
+                "hei_point_y(" + hpy.x + ", " + hpy.y + ")\r\n" +
+                "center(" + this.center.x + ", " + this.center.y +", r=" + lineDistance(hpx, this.center) + ")";
     }
-    
-    
-    
+
+
+
   	getRandomCell() {
   		var row = _.random(0, this.rows - 1);
         var col = _.random(0, this.cols - 1);

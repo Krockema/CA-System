@@ -1,6 +1,6 @@
 // app.controller('graphController', function ($attrs, $interval, $scope) {
 app.controller('graphController', function ($interval, $scope) {
-  $scope.initDensity = parseInt(500);
+  $scope.initDensity = parseInt(2500);
   $scope.initDistribution = parseInt(10);
   $scope.dividePercent = parseInt(70);
   $scope.flipPercent = parseInt(30);
