@@ -1,7 +1,8 @@
 // app.controller('graphController', function ($attrs, $interval, $scope) {
 app.controller('graphController', function ($interval, $scope) {
   $scope.initDensity = parseInt(2500);
-  $scope.initDistribution = parseInt(10);
+  $scope.initDistanceFromCenter = parseInt(10);
+  $scope.initDistribution = parseInt(1);
   $scope.dividePercent = parseInt(70);
   $scope.flipPercent = parseInt(30);
   $scope.updateCycle = parseInt(100);
@@ -62,11 +63,12 @@ app.controller('graphController', function ($interval, $scope) {
 
   function getCellInfectionState(x2, y2) {
     var cellType = 'healthy';
-    let maxDistance = (width * (parseInt($scope.initDistribution) / 100));
+    let maxDistance = (width * parseInt($scope.initDistanceFromCenter) / 100);
     let x1 = width / 2;
     let y1 = height / 2;
     if($scope.algorithm.centerInfection === true) {
-      if(Math.sqrt( (x2-=x1)*x2 + (y2-=y1)*y2 ) < maxDistance) {
+      if(Math.sqrt( (x2-=x1)*x2 + (y2-=y1)*y2 ) < maxDistance 
+         && (population < (parseInt($scope.initDensity) * parseInt($scope.initDistribution) / 100))) {
         population++;
         cellType = 'infected';
       }

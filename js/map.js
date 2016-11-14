@@ -44,7 +44,8 @@ class Map {
           []
         ];
         this.cells = [];
-        this.center = new Position(0,0);
+        this.center = new Position(25*10,25*10);
+        this.radius = 10 * 10;
 
         this.initializeGrid();
     }
@@ -180,15 +181,19 @@ class Map {
         this.center = new Position(
           ((lpx.x + hpx.x + lpy.x) / 3),
           ((lpx.y + hpx.y + lpy.y) / 3));
+        this.radius = lineDistance(lpx, this.center);
         if(lineDistance(hpy, this.center) >= lineDistance(lpx, this.center))
         { this.center.x = (lpx.x + hpx.x + hpy.x) / 3;
-          this.center.y = (lpx.y + hpx.y + hpy.y) / 3; }
+          this.center.y = (lpx.y + hpx.y + hpy.y) / 3;
+          this.radius = lineDistance(hpx, this.center); }
         if(lineDistance(lpy, this.center) >= lineDistance(lpx, this.center))
         { this.center.x = (lpx.x + lpy.x + hpy.x) / 3;
-          this.center.y = (lpx.y + lpy.y + hpy.y) / 3; }
+          this.center.y = (lpx.y + lpy.y + hpy.y) / 3; 
+          this.radius = lineDistance(hpy, this.center); }
         if(lineDistance(hpx, this.center) >= lineDistance(lpx, this.center))
-        { center.x = (hpx.x + lpy.x + hpy.x) / 3;
-          center.y = (hpx.y + lpy.y + hpy.y) / 3; }
+        { this.center.x = (hpx.x + lpy.x + hpy.x) / 3;
+          this.center.y = (hpx.y + lpy.y + hpy.y) / 3; 
+          this.radius = lineDistance(hpy, this.center); }
 
 
 

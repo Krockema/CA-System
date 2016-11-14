@@ -60,11 +60,10 @@ app.controller('caController', function ($interval, $scope) {
         canvas.toBlob(function(blob) {
             saveAs(blob, "CA_step_" + $scope.stepcounter + ".png");
         });
-        */
+        
         var svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
         saveLogToFile(svgString, "CA_step_" + $scope.stepcounter + ".svg");
-
-
+        */
     };
 
     $scope.runStepByStep = function() {
@@ -87,7 +86,7 @@ app.controller('caController', function ($interval, $scope) {
             // Logging options
             logstring = "step: " + $scope.stepcounter + " blocked: " + map.map.getBlockedCellsCount() + " free: " + map.map.getLivingCellsCount() + ";\r\n";
             console.log(logstring + map.map.getOuterBoundaries() + "\r\n");
-            //$scope.saveFile();
+            // $scope.saveFile();
 
         }
       }, 10); // ms till next Step.
