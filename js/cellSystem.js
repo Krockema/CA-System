@@ -59,7 +59,6 @@ class CellSystem {
         useIfFree(cell.position.x + 0, cell.position.y - 1);
         useIfFree(cell.position.x - 1, cell.position.y + 0);
 
-
         useIfFree(cell.position.x + 1, cell.position.y + 1);
         useIfFree(cell.position.x - 1, cell.position.y + 1);
         useIfFree(cell.position.x + 1, cell.position.y - 1);
@@ -70,6 +69,22 @@ class CellSystem {
 
     getPopulation() {
       return this.map.cells.filter(cell => !cell.isFree).length;
+    }
+    
+    setBorders() {        
+        let cells = this.map.cells.filter(cell => !cell.isFree);
+        let c = 0;
+        for(let cell of cells) {
+            let neighbors = this.getNeighbors(cell);
+            if(neighbors.length > 0) {  cell.isBorder = true; 
+                                        c++; }  
+        }
+        return c;
+    }
+    
+    
+    getBorders() {
+        return this.map.cells.filter(cell => cell.isBorder);
     }
 
     /**

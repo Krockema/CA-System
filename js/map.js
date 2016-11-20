@@ -44,8 +44,8 @@ class Map {
           []
         ];
         this.cells = [];
-        this.center = new Position(25*10,25*10);
-        this.radius = 10 * 10;
+        this.center = new Position(cols,rows);
+        this.radius = 10;
 
         this.initializeGrid();
     }
@@ -55,6 +55,7 @@ class Map {
             this.grid.push([]);
             for (var col = 0; col < this.cols; col++) {
                 var c = new Cell(row, col);
+                
                 // uncool and needs to be fixed.
 
                 this.grid[row].push(c);
@@ -153,9 +154,8 @@ class Map {
                 if (!curr.isFree) prev++;
                 return prev;
             }, 0);
-
     }
-
+    
     getOuterBoundaries() {
 
         // better to --> run throu reduced map
@@ -195,7 +195,8 @@ class Map {
           this.center.y = (hpx.y + lpy.y + hpy.y) / 3; 
           this.radius = lineDistance(hpy, this.center); }
 
-
+        //        this.center.x + 
+        
 
         return "low_point_x(" + lpx.x + ", " + lpx.y + ")\r\n" +
                 "low_point_y(" + lpy.x + ", " + lpy.y + ")\r\n" +
@@ -240,14 +241,20 @@ class Map {
 }
 
 class Cell {
-    constructor(row, col, cellType = CellType.Free) {
+    constructor(row, col,border = false, cellType = CellType.Free) {
         this.position = new Position(col, row);
         this.cellType = cellType;
+        this.border = border;
     }
-
+    
     set type(cellType) {
         this.cellType = cellType;
     }
+    
+    set isBorder(border) {
+        this.border = border;
+    }
+    
     get type() {
         return this.cellType;
     }
@@ -269,6 +276,10 @@ class Cell {
     get isGoal() {
         return this.type === CellType.Goal;
     }
+    
+    get isBorder() {
+        return this.border;
+    }
 }
 
 var CellType = Object.freeze({
@@ -277,5 +288,5 @@ var CellType = Object.freeze({
     Visited: 2,
     Current: 3,
     Start: 4,
-    Goal: 5
+    Goal: 5,
 });

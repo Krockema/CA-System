@@ -4,7 +4,7 @@ var app = angular.module('app', ['ngRoute', 'chart.js']).config(['ChartJsProvide
     ChartJsProvider.setOptions({
 //      colours: ['#FF5252', '#FF8A80'],
 //      responsive: false
-//        scaleShowLabels: false
+//      scaleShowLabels: false
       //scaleOverride: true,
       // Number - The number of steps in a hard coded scale
       //scaleSteps: 10,

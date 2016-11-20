@@ -15,9 +15,9 @@
                       ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,start:cell.isStart, goal:cell.isGoal}"
                    ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)" ng-attr-style="fill:{{cell.color}};"></rect>
             </g>
-            <circle cx="{{map.map.center.x * map.cellSize}}" cy="{{map.map.center.y * map.cellSize}}" r="{{map.map.radius * map.cellSize}}" stroke="green" stroke-width="2" fill="transparent" />
-        <div id="png-container"></div>
-        <canvas id="canvas"></canvas>
+            <circle ng-attr-cx="{{map.map.center.x * map.cellSize}}" ng-attr-cy="{{map.map.center.y * map.cellSize}}" ng-attr-r="{{map.map.radius * map.cellSize}}" stroke="green" stroke-width="2" fill="transparent" />
+        <!-- <div id="png-container"></div>
+        <canvas id="canvas"></canvas> -->
       </div>
       <div class="col-xs-5">
         <!-- form content-->

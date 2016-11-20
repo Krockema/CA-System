@@ -2,10 +2,10 @@
 app.controller('caController', function ($interval, $scope) {
     var map = this;
     $scope.map = map;
-    map.name = "CellSystem";
     $scope.rows = 50;
     $scope.cols = 50;
     map.map = new Map($scope.cols, $scope.rows);
+    map.name = "CellSystem";
     // map.map.notifyOnChange(cell => console.log(cell.position.toString(), cell));
     // Map Preperation
     map.cellSize = 10;
@@ -76,7 +76,7 @@ app.controller('caController', function ($interval, $scope) {
       stop = $interval(function() {
         // To Do Each Step
         system.step(dp, fc);
-        $scope.stepcounter = $scope.stepcounter + 1;
+        $scope.stepcounter++;
 
         if($scope.stepcounter % 100 === 0) {
             var population = system.getPopulation();
@@ -86,6 +86,8 @@ app.controller('caController', function ($interval, $scope) {
             // Logging options
             logstring = "step: " + $scope.stepcounter + " blocked: " + map.map.getBlockedCellsCount() + " free: " + map.map.getLivingCellsCount() + ";\r\n";
             console.log(logstring + map.map.getOuterBoundaries() + "\r\n");
+            console.log("Popula: " + system.getPopulation() + "\r\n");
+            console.log("Border: " + system.setBorders() + "\r\n");
             // $scope.saveFile();
 
         }
