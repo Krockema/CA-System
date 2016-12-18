@@ -1,10 +1,10 @@
 // app.controller('graphController', function ($attrs, $interval, $scope) {
 app.controller('graphController', function ($interval, $scope) {
   $scope.initDensity = parseInt(2500);
-  $scope.initDistanceFromCenter = parseInt(10);
-  $scope.initDistribution = parseInt(1);
-  $scope.dividePercent = parseInt(70);
-  $scope.flipPercent = parseInt(30);
+  $scope.initDistanceFromCenter = parseInt(20);
+  $scope.initDistribution = parseInt(5);
+  $scope.dividePercent = parseInt(5);
+  $scope.flipPercent = parseInt(5);
   $scope.updateCycle = parseInt(100);
   $scope.stepcounter = 0;
 
@@ -17,21 +17,22 @@ app.controller('graphController', function ($interval, $scope) {
   // i know ... scarry....
   $scope.series = ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Population' ];
   $scope.ds_line = [[population]];
-
+  var logstring = "";
+    
 
   $scope.algorithm = {
     voronoi : true,
     delaunay : false,
     pointers : true,
-    centerInfection : false,
+    centerInfection : true,
     dynamicSystem : false
   };
   var stop;
   // Canvas Context
   var canvas = document.getElementById("c"),
       context = canvas.getContext("2d"),
-      width = canvas.width = 600,
-      height = canvas.height = 600;
+      width = canvas.width = 500,
+      height = canvas.height = 500;
   // Voronoi Parameters
   var particles = new Array($scope.initDensity);
   var voronoi = d3_voronoi.voronoi()
@@ -42,6 +43,7 @@ app.controller('graphController', function ($interval, $scope) {
   $scope.generateMap =  function() {
       // initialize the map - Create a Random Dot Matrix
       population = 0;
+      count = 0;
       $scope.stepcounter = 0;
       particles = new Array($scope.initDensity);
       for (var i = 0; i < parseInt($scope.initDensity); ++i) {
@@ -53,14 +55,43 @@ app.controller('graphController', function ($interval, $scope) {
                           1: y2,
                           vx: 0,
                           vy: 0,
-                          cellType: cellType};
+                          cellType: cellType,
+                          isBorder: false,
+                          number: count};
+          count++;
           }
       topology = computeTopology(voronoi(particles));
       VoronoiGeo = topojson.mesh(topology, topology.objects.voronoi, function(a, b) { return a !== b; });
+      setBorders();
       reDrawGraph(topology);
       // start voronoi teslation and Create its TreeStructure
+      
   };
+    
+    function setBorders() {        
+        let cells = particles.filter(cell => cell.cellType != 'healthy');
+        let c = 0;
+        for(let cell of cells) {
+            let neighbors = getValidNeighbors(cell.number);
+            if(neighbors.length > 0) {  cell.isBorder = true; 
+                                        c++; }
+            else{ cell.isBorder = false; }
+        }
+        return c;
+    }
 
+    function getBorders() {
+        var p = [];
+        for(let pnt of particles.filter(cell => cell.isBorder == true)) {
+            p.push(new Position(pnt[0], pnt[1]));
+        }
+        return p;
+    }
+
+    function getGetInfectionCount() {
+        return particles.filter(cell => cell.cellType != 'healthy').length;
+    }
+    
   function getCellInfectionState(x2, y2) {
     var cellType = 'healthy';
     let maxDistance = (width * parseInt($scope.initDistanceFromCenter) / 100);
@@ -100,12 +131,19 @@ app.controller('graphController', function ($interval, $scope) {
           reDrawGraph();
         }
 
-        if($scope.stepcounter % 100 === 0) {
+        if($scope.stepcounter % $scope.updateCycle === 0) {
           /* Statistics -  */
           $scope.ds_line[0].push(population);
           $scope.lbl_line.push($scope.stepcounter / 100);
           $scope.ds_pie = [population, parseInt($scope.initDensity) - population];
+            if (population % ($scope.initDensity * 0.9) === 0) {
+              $interval.cancel(stop);
+              stop = undefined;
+              saveLogToFile(logstring, 'gs1.txt'); logstring = "";
+            }    
         }
+
+          
       }, 0); // ms till next Step.
 
   };
@@ -142,7 +180,7 @@ app.controller('graphController', function ($interval, $scope) {
       let isRunning = true;
       let currentCell = _.random(0, parseInt($scope.initDensity) - 1);
 
-      if(particles[currentCell].cellType == 'infected' || particles[currentCell].cellType == 'moved' || particles[currentCell].cellType == 'divided') {
+      if(particles[currentCell].cellType != 'healthy') {
 
         // Reset if Cell Moved or Infected previously
         if(particles[currentCell].cellType != 'infected') {
@@ -157,7 +195,13 @@ app.controller('graphController', function ($interval, $scope) {
           var direction = _.random(0, neighbors.length - 1);
           if (ran <= dividePercentCell) {
                 particles[neighbors[direction]].cellType = 'divided';
+                particles[neighbors[direction]].isBorder = true;
                 population++;
+                if(neighbors.length > 1) {
+                    particles[currentCell].isBorder = true;
+                } else {
+                    particles[currentCell].isBorder = false;
+                }
           }
           if(ran <= dividePercentCell + flipPercentCell && ran > dividePercentCell ) {
                 particles[currentCell].cellType = 'healthy';
@@ -179,6 +223,17 @@ app.controller('graphController', function ($interval, $scope) {
     }
     return validNeigbors;
   }
+    
+  function getNeighbors(currentCell) {
+    let neighbor = topojson.neighbors(topology.objects.voronoi.geometries)[currentCell];
+    var validNeigbors = [];
+    for (var i = 0; i < neighbor.length; i++) {
+      if (particles[neighbor[i]].cellType === 'healthy') {
+        validNeigbors.push(neighbor[i]);
+      }
+    }
+    return validNeigbors;
+  }    
 
   $scope.refreshGraph = function() {
     reDrawGraph();
@@ -186,8 +241,11 @@ app.controller('graphController', function ($interval, $scope) {
 
   function reDrawGraph() {
     context.clearRect(0, 0, width, height);
-
-    // VORONOI
+    if(logstring == "") { logstring="time;cell.id;size;surface;cell.x;cell.y;neighbors;center.x;center.y;\r\n"; } ;
+    var border = getBorders();
+    var sphere = makeCircle(border);
+    
+  // VORONOI
     if ($scope.algorithm.voronoi) {
       // Draw whole Voronoi
       context.beginPath();
@@ -197,7 +255,7 @@ app.controller('graphController', function ($interval, $scope) {
       context.stroke();
 
 
-      // Colorize Infected Cells.
+  // Colorize Infected Cells.
       context.beginPath();
       renderMultiPolygon(context, topojson.merge(topology, topology.objects.voronoi.geometries.filter(
         function(d) { return (d.data.cellType === 'infected' || d.data.cellType === 'moved' || d.data.cellType === 'divided'); })));
@@ -209,9 +267,29 @@ app.controller('graphController', function ($interval, $scope) {
       context.stroke();
     }
 
+      
     // POINTS
     if ($scope.algorithm.pointers) {
       particles.forEach(function(p, i) {
+        // logging.  
+        if(p.cellType != 'healthy') { 
+          let cs = calcPolygonArea(topojson.merge(topology, topology.objects.voronoi.geometries.filter(
+                    function(d) { return (d.data.number === p.number); })));
+          let neighbors = topojson.neighbors(topology.objects.voronoi.geometries)[p.number];
+          logstring = logstring + 
+              $scope.stepcounter + ";" + 
+              p.number + ";" + 
+              cs + ";100;" + 
+              p[0] + ";" + 
+              p[1] + ";" + 
+              neighbors.length + ";" + 
+              sphere.x + ";" + sphere.y + ";" + 
+              distanceToCenter(sphere, p) + "\r\n"; 
+        }
+  
+        // logging end.
+          
+          
         context.beginPath();
         context.arc(p[0], p[1], 2.5, 0, 2 * Math.PI);
         if (p.cellType == 'healthy') {
@@ -220,6 +298,8 @@ app.controller('graphController', function ($interval, $scope) {
           context.fillStyle = "rgba(63, 127, 191, 1)";
         } else if (p.cellType == 'divided') {
           context.fillStyle = "rgba(63, 127, 191, 1)";
+        } else if (p.isBorder == true) {
+            context.fillStyle = "rgba(0,0,0,1)";
         } else {
           context.fillStyle = "rgba(255,0,0,1)";
         }
@@ -240,15 +320,28 @@ app.controller('graphController', function ($interval, $scope) {
     }
 
     // calc Area all given Poligons and return its size
-    // not sure if correct.
-    // var area = calcPolygonArea2(topojson.mesh(topology, topology.objects.voronoi));
+    // Corrected !
+    // gesamt bereich
+    calcPolygonArea(topojson.merge(topology, topology.objects.voronoi.geometries), 'Clear');
+    
+    // Infizierter Bereich.
+    calcPolygonArea(topojson.merge(topology, topology.objects.voronoi.geometries.filter(
+        function(d) { return (d.data.cellType === 'infected' || 
+                              d.data.cellType === 'moved' || 
+                              d.data.cellType === 'divided'); })));
+    // Ausdehnung - Kann für Geschwindigkeitsoptimierung in das Point Drawing migriert werden.
+    // var distance = 15;
+
+    // console.log('Ausdehnung : ' + roundToTwo(distance));
+    // console.log("Rand: " + border.length);
+    // console.log("Count: " + getGetInfectionCount());
+
+    context.beginPath();
+    context.arc(sphere.x, sphere.y, sphere.r+5, 0, 2*Math.PI);
+    context.strokeStyle = "rgba(0,153,0,1)";
+    context.stroke();
+    //if($scope.stepcounter % 200000 === 0) { saveLogToFile(logstring, 'gs1.txt'); logstring = ""; };
 }
-
-// save a file
-$scope.saveFile = function() {
-  saveLogToFile("Hello, world!", "CA_TEXTFILE");
-};
-
 
 // Drawing Functions.
   function renderMultiLineString(context, line) {

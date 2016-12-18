@@ -1,3 +1,24 @@
+class Position {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    toString() {
+        return "x = " + this.x + " y = " + this.y;
+    }
+}
+class Sphere {
+    constructor(p, r) {
+        this.point = p;
+        this.r = r;
+    }
+    toString() {
+        return "x = " + this.x + " y = " + this.y + " r = " + this.r;
+    }
+}
+
+
+
 function roundToTwo(num) {
     return +(Math.round(num + "e+2")  + "e-2");
 }
@@ -15,6 +36,31 @@ function saveLogToFile(blob, filename) {
 //});
 
 }
+
+function getShpere(points, sphere) {
+    var complete = false;
+    while(!complete) {
+        var rnd = _.random(0, points.length - 1);
+        var distance = lineDistance(new Position(points[rnd][0], points[rnd][1]), sphere.point);
+        if( sphere.r < distance) {
+            sphere.r = sphere.r + ((distance - sphere.r) / 2);
+            sphere.point.x = sphere.point.x + ((points[rnd][0] - sphere.point.x) / 2);
+            sphere.point.y = sphere.point.y + ((points[rnd][1] - sphere.point.y) / 2);
+        }
+        let max = sphere.r;
+        complete = true;
+        for (var i = 0; i < points.length; i++) {
+            let d = lineDistance(new Position(points[i][0], points[i][1]), sphere.point);
+            if(max < d) {
+                complete = false;
+                max = d;
+            }
+        }
+    }
+        console.log("center : " + sphere.point.x + ", " + sphere.point.y + ", " + sphere.r + ";");
+        return sphere;
+}
+
 
 function computeTopology(diagram) {
   var cells = diagram.cells,
@@ -97,38 +143,16 @@ function lineDistance( point1, point2 )
   return Math.sqrt( xs + ys );
 }
 
-function calcPolygonArea2(v) {
-    var total = 0;
-    for (var k = 0; k < v.coordinates.length; k++) {
-      var cellTotal = 0;
-      var vertices = v.coordinates[k];
-      for (var i = 0, l = vertices.length; i < l; i++) {
-        var addX = vertices[i][0];
-        var addY = vertices[i == vertices.length - 1 ? 0 : i + 1][1];
-        var subX = vertices[i == vertices.length - 1 ? 0 : i + 1][0];
-        var subY = vertices[i][1];
-
-        cellTotal += (addX * addY * 0.5);
-        cellTotal -= (subX * subY * 0.5);
-      }
-      console.log('cell total: ' + Math.abs(cellTotal));
-      total = total + Math.abs(cellTotal);
-    }
-    console.log('Total: ' + Math.abs(total));
-
-    // return ;
-}
-
 function calcPolygonArea(v) {
   var total = 0;
   for (var k = 0; k < v.coordinates.length; k++) {
     var cellTotal = 0;
     var vertices = v.coordinates[k];
-    cellTotal = polygonArea(vertices);
-    console.log('cell total: ' + Math.abs(cellTotal));
+    cellTotal = polygonArea(vertices[0]);
+    //console.log('cell total: ' + Math.abs(cellTotal));
     total = total + Math.abs(cellTotal);
   }
-  console.log('Total: ' + Math.abs(total));
+  return roundToTwo(Math.abs(total), 2);
 
 }
 function polygonArea(polygons)

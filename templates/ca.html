@@ -16,7 +16,9 @@
                    ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)" ng-attr-style="fill:{{cell.color}};"></rect>
             </g>
             <circle ng-attr-cx="{{map.map.center.x * map.cellSize}}" ng-attr-cy="{{map.map.center.y * map.cellSize}}" ng-attr-r="{{map.map.radius * map.cellSize}}" stroke="green" stroke-width="2" fill="transparent" />
-        <!-- <div id="png-container"></div>
+            <circle ng-attr-cx="{{map.map.center.x * map.cellSize}}" ng-attr-cy="{{map.map.center.y * map.cellSize}}" ng-attr-r="{{map.map.radius80p * map.cellSize}}" stroke="green" stroke-width="2" fill="transparent" />
+        
+            <!-- <div id="png-container"></div>
         <canvas id="canvas"></canvas> -->
       </div>
       <div class="col-xs-5">

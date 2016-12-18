@@ -32,6 +32,12 @@ class CellSystem {
           var direction = _.random(0, neighbors.length - 1);
           if (ran <= dividePercentCell) {
                 neighbors[direction].type = CellType.Visited;
+                neighbors[direction].isBorder = true;
+                if(neighbors.length > 1) {
+                    currentCell.isBorder = true;
+                } else { 
+                    currentCell.isBorder = false;
+                }
           }
           if(ran <= dividePercentCell + flipPercentCell && ran > dividePercentCell ) {
                 currentCell.type = CellType.Free;
@@ -84,9 +90,29 @@ class CellSystem {
     
     
     getBorders() {
-        return this.map.cells.filter(cell => cell.isBorder);
+        var p = [];
+        for(let pnt of this.map.cells.filter(cell => cell.isBorder)) {
+            p.push(new Position(pnt[0], pnt[1]));
+        }
+        return p;
     }
 
+    getAllCellsWithDistanceToCenter() {
+        let cells = this.map.cells.filter(cell => !cell.isFree);
+        let p = [];
+        for(let cell of cells) {
+                cell.distToCenter = lineDistance(cell.position, this.map.center);
+                p.push(cell.position);
+            }  
+        return p;
+    }
+    
+    getAllCells() {
+        return this.map.cells.filter(cell => !cell.isFree);
+    }
+        
+    
+    
     /**
      * Convert a number to a color using hsl, with range definition.
      * Example: if min/max are 0/1, and i is 0.75, the color is closer to green.

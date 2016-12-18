@@ -78,19 +78,43 @@ app.controller('caController', function ($interval, $scope) {
         system.step(dp, fc);
         $scope.stepcounter++;
 
-        if($scope.stepcounter % 100 === 0) {
+        if($scope.stepcounter % 25000 === 0) {
+            // Logging options
             var population = system.getPopulation();
             $scope.ds_line[0].push(population);
             $scope.lbl_line.push($scope.stepcounter / 100);
             $scope.ds_pie = [population, mapsize - population];
             // Logging options
-            logstring = "step: " + $scope.stepcounter + " blocked: " + map.map.getBlockedCellsCount() + " free: " + map.map.getLivingCellsCount() + ";\r\n";
-            console.log(logstring + map.map.getOuterBoundaries() + "\r\n");
-            console.log("Popula: " + system.getPopulation() + "\r\n");
-            console.log("Border: " + system.setBorders() + "\r\n");
-            // $scope.saveFile();
+            if(logstring == "") { logstring="time;cell.id;size;surface;x;y\r\n"; } ;
+            // logstring = "step: " + $scope.stepcounter + " blocked: " + map.map.getBlockedCellsCount() + " free: " + map.map.getLivingCellsCount() + ";\r\n";
+            
+            var border = map.map.getBorders();
+            var sphere = makeCircle(border);
+            
+            map.map.center.x = sphere.x;
+            map.map.center.y = sphere.y;
+            map.map.radius = sphere.r;
+            //console.log(logstring + border.length + "\r\n");
+            //console.log("Popula: " + system.getPopulation() + "\r\n");
+            //console.log("Border: " + system.setBorders() + "\r\n");
+            //var cells = _.sortBy(system.getAllCellsWithDistanceToCenter(), 'distToCenter' ).reverse();
+            //console.log(cells);
+            //var sphere80p = makeCircle(cells.slice(0, Math.round(cells.length * 0.7)));
+            //map.map.radius80p = sphere80p.r;
+            //console.log(map.map.radius80p);
+            //logstring = logstring + "center-x:" +  sphere.x + " ,center-y:" +  sphere.y + " ,center-radius:" + sphere.r + "\r\n";
+            
+            var cells = system.getAllCellsWithDistanceToCenter();
+            let c = 0;
+            for(let cell of cells)  { 
+                logstring = logstring + $scope.stepcounter + ";" + c + ";10;100;" + cell.x + ";" + cell.y + "\r\n"; 
+                c++;
+            };
+            // 
 
         }
+        if($scope.stepcounter % 100000 === 0 || map.map.getLivingCellsCount() == 0 ) { saveLogToFile(logstring, 'p3.txt');
+                                                                                        logstring = ""; }
       }, 10); // ms till next Step.
     };
 
