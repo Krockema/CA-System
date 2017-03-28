@@ -1,0 +1,2 @@
+Threads	Init(s)	CPU(s)	Wall(s)	Mem(Mb)
+1	0.732123	115.552	189.236	331.746

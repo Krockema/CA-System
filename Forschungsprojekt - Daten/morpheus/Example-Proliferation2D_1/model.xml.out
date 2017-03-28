@@ -1,0 +1,365 @@
+
+                            <<  M O R P H E U S  >>
+     Modeling environment for multi-scale and multicellular systems biology
+         Copyright 2009-2017, Technische Universität Dresden, Germany
+                       Version 1.9.2, Revision 28.09.2016
+ External applications
+  GnuPlot executable:   /Applications/Gnuplot.app/Contents/MacOS/Gnuplot
+  GnuPlot version:      gnuplot 5.0 patchlevel 3
+
+
+
+Initializing from file model.xml
+parsing ...
+Time/RandomSeed not specified, using arbitray seed (based on time).
+Random seed of master thread = 1484044115
+Creating lattice
+Loading [1] Global Plugins
+Creating subscope CellType[cells] in scope root
+Entering scope CellType[cells]
+getXMLAttribute: seeking for VolumeConstraint->target: 20
+getXMLAttribute: seeking for VolumeConstraint->strength: 1
+getXMLAttribute: seeking for SurfaceConstraint->target: 0.9
+getXMLAttribute: seeking for SurfaceConstraint->strength: 1
+getXMLAttribute: seeking for SurfaceConstraint->mode: aspherity
+getXMLAttribute: seeking for SurfaceConstraint->exponent .. not found
+Creating subscope System in scope CellType[cells]
+Entering scope System
+Entering scope System
+Leaving scope System, back to scope System
+getXMLAttribute: seeking for Rule->symbol-ref: c
+getXMLAttribute: seeking for Expression->text: if( c > 0, c-1, 0)
+Leaving scope System, back to scope CellType[cells]
+getXMLAttribute: seeking for Condition->text: rand_uni(0,1) < p
+getXMLAttribute: seeking for CellDivision->division-plane: random
+getXMLAttribute: seeking for CellDivision->orientation .. not found
+getXMLAttribute: seeking for CellDivision->write-log .. not found
+Creating subscope System in scope CellType[cells]
+Entering scope System
+Entering scope System
+Leaving scope System, back to scope System
+getXMLAttribute: seeking for Rule->symbol-ref: d
+getXMLAttribute: seeking for Expression->text: d+0.5
+getXMLAttribute: seeking for Rule->symbol-ref: c
+getXMLAttribute: seeking for Expression->text: 20
+Leaving scope System, back to scope CellType[cells]
+Entering scope System
+Leaving scope System, back to scope CellType[cells]
+Leaving scope CellType[cells], back to scope root
+CellTypes defined: 'cells' 
+getXMLAttribute: seeking for MonteCarloSampler/MCSDuration->value: 1
+getXMLAttribute: seeking for MonteCarloSampler/MCSDuration->symbol .. not found
+getXMLAttribute: seeking for MonteCarloSampler->stepper: edgelist
+getXMLAttribute: seeking for MonteCarloSampler/MetropolisKinetics->temperature: 3
+getXMLAttribute: seeking for MonteCarloSampler/MetropolisKinetics->yield: 0.1
+Creating cell layer Creating subscope CellType[Medium] in scope root
+Entering scope CellType[Medium]
+Leaving scope CellType[Medium], back to scope root
+with initial state set to CellType 'Medium'
+LDL getLattice
+Entering scope CellType[cells]
+getXMLAttribute: seeking for InitCircle->number-of-cells: 2509
+getXMLAttribute: seeking for InitCircle->mode: regular
+getXMLAttribute: seeking for Dimensions->center: 112, 112, 0
+getXMLAttribute: seeking for Dimensions->radius: 40
+Leaving scope CellType[cells], back to scope root
+Initializing celltype 'cells'
+Entering scope CellType[cells]
+Entering scope System
+Scope: Creating Accessor for symbol _noise_scaling from Scope System
+Scope: Creating Accessor for symbol time from Scope root
+Leaving scope System, back to scope CellType[cells]
+Scope: Creating Accessor for symbol p from Scope CellType[cells]
+Plugin CellDivision: Registered input symbol dependencies p [CellType[cells]] ,
+Entering scope System
+Scope: Creating Accessor for symbol _noise_scaling from Scope System
+Scope: Creating Accessor for symbol time from Scope root
+Leaving scope System, back to scope CellType[cells]
+Leaving scope CellType[cells], back to scope root
+Initializing celltype 'Medium'
+Entering scope CellType[Medium]
+Leaving scope CellType[Medium], back to scope root
+LDL getLattice
+EdgeListTracker::init() : Found 15868 initial edges, wherof 15868 can be modified.
+CPM: InteractionEnergy has 4 neighbors
+CPM: InteractionEnergy was initialized with  IA_COLLAPSE 
+Loading Analysis tools [2]
+getXMLAttribute: seeking for Gnuplotter->file-numbering .. not found
+getXMLAttribute: seeking for Terminal->name: png
+getXMLAttribute: seeking for Terminal->size .. not found
+getXMLAttribute: seeking for Terminal->pointsize .. not found
+getXMLAttribute: seeking for Terminal->opacity .. not found
+getXMLAttribute: seeking for Cells->value: c
+Output/TextOutput
+getXMLAttribute: seeking for Input/Symbol[0]->symbol-ref: celltype.cells.size
+getXMLAttribute: seeking for Input/Symbol[1]->symbol-ref: cell.surface
+getXMLAttribute: seeking for Input/Symbol[2]->symbol-ref: cell.center.x
+getXMLAttribute: seeking for Input/Symbol[3]->symbol-ref: cell.center.y
+getXMLAttribute: seeking for Input/Symbol[4]->symbol-ref: cell.sub_id
+getXMLAttribute: seeking for Input/Symbol[5]->symbol-ref: cell.super_id
+getXMLAttribute: seeking for Restriction/Slice->value .. not found
+getXMLAttribute: seeking for Restriction/Slice->axis .. not found
+getXMLAttribute: seeking for Restriction/Celltype->celltype .. not found
+getXMLAttribute: seeking for Restriction/Cells->cell-ids .. not found
+getXMLAttribute: seeking for Restriction->domain-only .. not found
+getXMLAttribute: seeking for Restriction->force-node-granularity .. not found
+getXMLAttribute: seeking for Output/TextOutput->header .. not found
+getXMLAttribute: seeking for Output/TextOutput->separator .. not found
+getXMLAttribute: seeking for Output/TextOutput->file-name .. not found
+getXMLAttribute: seeking for Output/TextOutput->file-numbering .. not found
+getXMLAttribute: seeking for Output/TextOutput->file-separation .. not found
+getXMLAttribute: seeking for Output/TextOutput->file-format .. not found
+Scope: Creating Accessor for symbol c from Scope CellType[cells]
+Plugin Param dep c scope 0x7fbe3fe081f0
+Scope: Creating Accessor for symbol celltype.cells.size from Scope root
+Plugin Param dep celltype.cells.size scope 0x7fbe3fe081f0
+Scope: Creating Accessor for symbol cell.surface from Scope root
+Plugin Param dep cell.surface scope 0x7fbe3fe081f0
+Scope: Creating Accessor for symbol cell.center.x from Scope root
+Scope: Creating Accessor for symbol cell.center from Scope root
+Plugin Param dep cell.center scope 0x7fbe3fe081f0
+Scope: Creating Accessor for symbol cell.center.y from Scope root
+Scope: Creating Accessor for symbol cell.center from Scope root
+Plugin Param dep cell.center scope 0x7fbe3fe081f0
+Scope: Creating Accessor for symbol cell.sub_id from Scope root
+Plugin Param dep cell.sub_id scope 0x7fbe3fe081f0
+Scope: Creating Accessor for symbol cell.super_id from Scope root
+Plugin Param dep cell.super_id scope 0x7fbe3fe081f0
+Plugin Logger: Registered input symbol dependencies cell.center [root] ,cell.sub_id [root] ,cell.super_id [root] ,cell.surface [root] ,celltype.cells.size [root] ,
+Slice...?false
+Logger INIT:  
+Granularity:  Cell
+Restrictions: 
+Range:        2509
+Logger range:
+-> size 2509
+-> dataAxes 1
+-> data.sizes: 2509, 
+Scope: Creating Accessor for symbol time from Scope root
+Scope: Creating Accessor for symbol cell.id from Scope root
+System
+CellDivision
+CPM
+Gnuplotter
+Logger
+
+ TimeStepListener "System" propagates its time step 1
+ Upstream: 
+ Downstream: 
+-> c
+ Propagate down to Gnuplotter
+
+ TimeStepListener "CellDivision" propagates its time step 1
+ Upstream: 
+ -> p
+ Downstream: 
+-> c
+ Propagate down to Gnuplotter
+-> cell.center
+ Propagate down to Logger
+-> d
+
+ TimeStepListener "CPM" propagates its time step 1
+ Upstream: 
+ Downstream: 
+-> cell.center
+ Propagate down to Logger
+
+ TimeStepListener "Gnuplotter" propagates its time step 25
+ Upstream: 
+ -> c
+ Propagate up to System
+ Propagate up to CellDivision
+ Downstream: 
+
+ TimeStepListener "Logger" propagates its time step 10
+ Upstream: 
+ -> cell.center
+ Propagate up to CellDivision
+ Propagate up to CPM
+ -> cell.sub_id
+ -> cell.super_id
+ -> cell.surface
+ -> celltype.cells.size
+ Downstream: 
+TimeScheduler::init: Ordering instantaneous processes for sequential update ...
+Trying to remove unregistered symbol "p" from unresolved_symbols. 
+======================================================
+ Time Schedule
+======================================================
+ Time precision patch is 0
+
+=====|    Phase I     |===============================
+-----. CPM .------------------------------------
+  + 1 => CPM [] -> [cell.center]
+-----. Reactions .------------------------------------
+  + 1 => System [] -> [c]
+
+=====|    Phase II    |===============================
+-----. Reporters and Instantaneous Processes.---------
+  + 1 => CellDivision [p] -> [c,cell.center,d]
+
+=====|    Phase III   |===============================
+-----. Analysis .-------------------------------------
+  + 25 => Gnuplotter [c] 
+  + 10 => Logger [cell.center,cell.sub_id,cell.super_id,cell.surface,celltype.cells.size] 
+------------------------------------------------------
+======================================================
+
+model is up
+Unknown option gnuplot-path
+GnuPlotter: Saving plot_00000.png
+opening file logger.txt
+Time: 0.00 atu
+Time: 7.00 
+Time: 14.00 
+Time: 21.00 
+GnuPlotter: Saving plot_00025.png
+Time: 28.00 
+Time: 35.00 
+Time: 42.00 
+Time: 49.00 
+GnuPlotter: Saving plot_00050.png
+Time: 56.00 
+Time: 63.00 
+Time: 70.00 
+GnuPlotter: Saving plot_00075.png
+Time: 77.00 
+Time: 84.00 
+Time: 91.00 
+Time: 98.00 
+GnuPlotter: Saving plot_00100.png
+Time: 105.00 
+Time: 112.00 
+Time: 119.00 
+GnuPlotter: Saving plot_00125.png
+Time: 126.00 
+Time: 133.00 
+Time: 140.00 
+Time: 147.00 
+GnuPlotter: Saving plot_00150.png
+Time: 154.00 
+Time: 161.00 
+Time: 168.00 
+GnuPlotter: Saving plot_00175.png
+Time: 175.00 
+Time: 182.00 
+Time: 189.00 
+Time: 196.00 
+GnuPlotter: Saving plot_00200.png
+Time: 203.00 
+Time: 210.00 
+Time: 217.00 
+Time: 224.00 
+GnuPlotter: Saving plot_00225.png
+Time: 231.00 
+Time: 238.00 
+Time: 245.00 
+GnuPlotter: Saving plot_00250.png
+Time: 252.00 
+Time: 259.00 
+Time: 266.00 
+Time: 273.00 
+GnuPlotter: Saving plot_00275.png
+Time: 280.00 
+Time: 287.00 
+Time: 294.00 
+GnuPlotter: Saving plot_00300.png
+Time: 301.00 
+Time: 308.00 
+Time: 315.00 
+Time: 322.00 
+GnuPlotter: Saving plot_00325.png
+Time: 329.00 
+Time: 336.00 
+Time: 343.00 
+GnuPlotter: Saving plot_00350.png
+Time: 350.00 
+Time: 357.00 
+Time: 364.00 
+Time: 371.00 
+GnuPlotter: Saving plot_00375.png
+Time: 378.00 
+Time: 385.00 
+Time: 392.00 
+Time: 399.00 
+GnuPlotter: Saving plot_00400.png
+Time: 406.00 
+Time: 413.00 
+Time: 420.00 
+GnuPlotter: Saving plot_00425.png
+Time: 427.00 
+Time: 434.00 
+Time: 441.00 
+Time: 448.00 
+GnuPlotter: Saving plot_00450.png
+Time: 455.00 
+Time: 462.00 
+Time: 469.00 
+GnuPlotter: Saving plot_00475.png
+Time: 476.00 
+Time: 483.00 
+Time: 490.00 
+Time: 497.00 
+GnuPlotter: Saving plot_00500.png
+Time: 504.00 
+Time: 511.00 
+Time: 518.00 
+GnuPlotter: Saving plot_00525.png
+Time: 525.00 
+Time: 532.00 
+Time: 539.00 
+Time: 546.00 
+GnuPlotter: Saving plot_00550.png
+Time: 553.00 
+Time: 560.00 
+Time: 567.00 
+Time: 574.00 
+GnuPlotter: Saving plot_00575.png
+Time: 581.00 
+Time: 588.00 
+Time: 595.00 
+GnuPlotter: Saving plot_00600.png
+Time: 602.00 
+Time: 609.00 
+Time: 616.00 
+Time: 623.00 
+GnuPlotter: Saving plot_00625.png
+Time: 630.00 
+Time: 637.00 
+Time: 644.00 
+GnuPlotter: Saving plot_00650.png
+Time: 651.00 
+Time: 658.00 
+Time: 665.00 
+Time: 672.00 
+GnuPlotter: Saving plot_00675.png
+Time: 679.00 
+Time: 686.00 
+Time: 693.00 
+GnuPlotter: Saving plot_00700.png
+Time: 700.00 
+======================================================
+ Time Schedule Performance Table
+======================================================
+
+  +  78.98% = 317631.14[ms] | Gnuplotter [c] -> []
+  +   8.71% = 35041.56[ms] | CPM [] -> [cell.center]
+  +   6.16% = 24781.04[ms] | CellDivision [p] -> [c,cell.center,d]
+  +   4.18% = 16831.08[ms] | System [] -> [c]
+  +   1.96% =  7899.89[ms] | Logger [cell.center,cell.sub_id,cell.super_id,cell.surface,celltype.cells.size] -> []
+======================================================
+
+
+=== Simulation finished ===
+Init Time   = 0s 673ms
+Wall Time   = 6m 42s
+CPU Time    = 2m 47s (1 threads)
+
+Memory peak = 358.594 Mb
+Deleting scope root
+Deleting scope CellType[cells]
+Deleting scope System
+Deleting scope System
+Deleting scope CellType[Medium]
+Deleting the CPM sampler

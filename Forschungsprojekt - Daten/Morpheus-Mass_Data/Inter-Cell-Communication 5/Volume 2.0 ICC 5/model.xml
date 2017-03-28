@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<MorpheusModel version="3">
+    <Description>
+        <Title>Example-Proliferation2D</Title>
+        <Details></Details>
+    </Description>
+    <Global>
+        <Variable symbol="c" value="0.0"/>
+    </Global>
+    <Space>
+        <Lattice class="square">
+            <Size symbol="size" value="224 224 0"/>
+            <BoundaryConditions>
+                <Condition boundary="x" type="noflux"/>
+                <Condition boundary="y" type="noflux"/>
+            </BoundaryConditions>
+            <Neighborhood>
+                <Order>3</Order>
+            </Neighborhood>
+        </Lattice>
+        <SpaceSymbol symbol="space"/>
+    </Space>
+    <Time>
+        <StartTime value="0"/>
+        <StopTime symbol="stoptime" value="700"/>
+        <TimeSymbol symbol="time"/>
+    </Time>
+    <CellTypes>
+        <CellType class="biological" name="cells">
+            <Property symbol="p" value="5e-2" name="proliferation rate"/>
+            <Property symbol="d" value="0" name="divisions"/>
+            <Property symbol="c" value="0" name="color"/>
+            <VolumeConstraint target="20" strength="2.0"/>
+            <SurfaceConstraint target="0.9" mode="aspherity" strength="1"/>
+            <System solver="euler" time-step="1.0">
+                <Rule symbol-ref="c">
+                    <Expression>if( c > 0, c-1, 0)</Expression>
+                </Rule>
+            </System>
+            <CellDivision division-plane="random">
+                <Condition>rand_uni(0,1) &lt; p</Condition>
+                <Triggers>
+                    <Rule symbol-ref="d">
+                        <Expression>d+0.5</Expression>
+                    </Rule>
+                    <Rule symbol-ref="c" name="color after division">
+                        <Expression>20</Expression>
+                    </Rule>
+                </Triggers>
+            </CellDivision>
+        </CellType>
+    </CellTypes>
+    <CPM>
+        <Interaction default="0">
+            <Contact type1="cells" type2="cells" value="5"/>
+        </Interaction>
+        <MonteCarloSampler stepper="edgelist">
+            <MCSDuration value="1"/>
+            <Neighborhood>
+                <Order>2</Order>
+            </Neighborhood>
+            <MetropolisKinetics temperature="3" yield="0.1"/>
+        </MonteCarloSampler>
+        <ShapeSurface scaling="norm">
+            <Neighborhood>
+                <Order>1</Order>
+            </Neighborhood>
+        </ShapeSurface>
+    </CPM>
+    <CellPopulations>
+        <Population size="1" type="cells">
+            <InitCircle mode="regular" number-of-cells="2509">
+                <Dimensions radius="40" center="112, 112, 0"/>
+            </InitCircle>
+        </Population>
+    </CellPopulations>
+    <Analysis>
+        <Gnuplotter time-step="100" decorate="false">
+            <Terminal name="png"/>
+            <Plot>
+                <Cells value="c" min="0.0" max="1">
+                    <ColorMap>
+                        <Color value="1" color="red"/>
+                        <Color value="0.0" color="green"/>
+                    </ColorMap>
+                </Cells>
+            </Plot>
+        </Gnuplotter>
+        <Logger time-step="10">
+            <Input>
+                <Symbol symbol-ref="celltype.cells.size"/>
+                <Symbol symbol-ref="cell.surface"/>
+                <Symbol symbol-ref="cell.center.x"/>
+                <Symbol symbol-ref="cell.center.y"/>
+                <Symbol symbol-ref="cell.sub_id"/>
+                <Symbol symbol-ref="cell.super_id"/>
+            </Input>
+            <Output>
+                <TextOutput/>
+            </Output>
+        </Logger>
+    </Analysis>
+</MorpheusModel>
