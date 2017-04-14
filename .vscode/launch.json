@@ -1,0 +1,13 @@
+{
+    "version": "0.1.0",
+    "configurations": [
+        {
+            "name": "Launch index.html (disable sourcemaps)",
+            "type": "chrome",
+            "request": "launch",
+            "sourceMaps": false,
+            "runtimeArgs":["--allow-file-access-from-files"],
+            "file": "${workspaceRoot}/index.html"
+        },
+    ]
+}

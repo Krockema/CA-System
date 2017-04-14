@@ -24,7 +24,7 @@ class Moveable {
     }
 }
 
-
+/*Represents the grid and all it´s properties. Cells are stored in here. */
 class Map {
     constructor(rows, cols) {
         this.rows = rows;
@@ -193,6 +193,7 @@ class Map {
             return undefined;
         }
     }
+    
     reset() {
         this.cells.filter(cell => cell.isVisited || cell.isCurrent || cell.isGoal || cell.isBlocked).forEach(cell => {
             cell.type = CellType.Free;
@@ -202,7 +203,7 @@ class Map {
 }
 
 class Cell {
-    constructor(row, col,border = false, cellType = CellType.Free, distanceToCenter = 0) {
+    constructor(row, col, border = false, cellType = CellType.Free, distanceToCenter = 0) {
         this.position = new Position(col, row);
         this.cellType = cellType;
         this.border = border;
