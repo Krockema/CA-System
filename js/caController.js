@@ -33,6 +33,19 @@ app.controller('caController', function ($interval, $scope) {
     $scope.series = ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Population'];
     $scope.ds_line = [[initialBlock]];
 
+     $scope.algorithm = {
+    energy : true
+  };
+
+  $scope.customStyle = {};
+ $scope.turnGreen = function (){
+    $scope.customStyle.colorClass = "green";
+}
+
+$scope.turnBlue = function() {
+    $scope.customStyle.colorClass = "blue";
+}
+
 
     $scope.saveFile = function () {
 
@@ -76,12 +89,17 @@ app.controller('caController', function ($interval, $scope) {
         //Every 10 ms do...
         stop = $interval(function () {
             // To Do Each Step
-            system.step(dp, fc);
+            system.step(dp, fc, $scope.algorithm.energy);
             $scope.stepcounter++;
+
+            if($scope.stepcounter % 10000 === 0)
+            {
+                var population = system.getLivingCellCount();
+            }
 
             if ($scope.stepcounter % 25000 === 0) {
                 // Logging options
-                var population = system.getPopulation();
+                var population = system.getLivingCellCount();
                 $scope.ds_line[0].push(population);
                 $scope.lbl_line.push($scope.stepcounter / 100);
                 $scope.ds_pie = [population, mapsize - population];

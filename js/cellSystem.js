@@ -12,43 +12,69 @@ class CellSystem {
         }
     }
 
-    step(dividePercentCell, flipPercentCell) {
+    // performs one markov step
+    step(dividePercentCell, flipPercentCell, useEnergyLevelAlgorithm) {
         let isRunning = true;
         let currentCell = this.map.getRandomCell();
 
         _.pull(this.cells, currentCell);
 
-        let neighbors = this.getNeighbors(currentCell);
+        let neighbors = this.getFreeNeighbors(currentCell);
 
-        if((currentCell.isBlocked || currentCell.isVisited || currentCell.isGoal) && neighbors.length > 0 ) {
+        if (useEnergyLevelAlgorithm && neighbors.length === 0) {
+            //Cell can't act
+            let livingNeighbors = this.getLivingNeighbors(currentCell, 1);
+            // raise energy level of each neighbor
+            livingNeighbors.forEach(function (element) {
+                if(element.energyLevel < 20){
+                    if(element.energyLevel < 15){
+                        if(element.energyLevel < 10){
+                            element.energyLevel +=5
+                            element.innerHTML = "test"
+                        }
+                        else{
+                            element.energyLevel += 2.5
+                        }
+                    }
+                    else{
+                        element.energyLevel += 1
+                    }
+                }
+                
+            }, this);
+        }
 
-          // Reset if Cell Moved previously
-          if(currentCell.isGoal) {
-            currentCell.type = CellType.Visited;
-          }
+        if ((currentCell.isBlocked || currentCell.isVisited || currentCell.isGoal) && neighbors.length > 0) {
 
-          // Cell RuleSystem.
-          var ran = _.random(0,100);
-          var direction = _.random(0, neighbors.length - 1);
-          if (ran <= dividePercentCell) {
+            // Reset if Cell Moved previously
+            if (currentCell.isGoal) {
+                currentCell.type = CellType.Visited;
+            }
+
+            // Cell RuleSystem.
+            var ran = _.random(0, 100) + currentCell.energyLevel;
+            var direction = _.random(0, neighbors.length - 1);
+
+            if (ran <= dividePercentCell) {
+                //Celldivision
                 neighbors[direction].type = CellType.Visited;
                 neighbors[direction].isBorder = true;
-                if(neighbors.length > 1) {
+                if (neighbors.length > 1) {
                     currentCell.isBorder = true;
-                } else { 
-                    currentCell.isBorder = false;
+                } else {
+                    currentCell.isBorder = false;                   
                 }
-          }
-          if(ran <= dividePercentCell + flipPercentCell && ran > dividePercentCell ) {
+            }
+            else{
+            //if (ran <= dividePercentCell + flipPercentCell && ran > dividePercentCell) {
                 currentCell.type = CellType.Free;
                 neighbors[direction].type = CellType.Goal;
-          }
-
+            }
         }
         return isRunning;
     }
 
-    getNeighbors(cell) {
+    getFreeNeighbors(cell) {
 
         let neighbors = [];
         let map = this.map;
@@ -73,25 +99,54 @@ class CellSystem {
         return neighbors;
     }
 
-    getPopulation() {
-      return this.map.cells.filter(cell => !cell.isFree).length;
+    getLivingNeighbors(cell, range) {
+
+        let neighbors = [];
+        let map = this.map;
+
+        let useIfAlive = (x, y) => {
+            let cell = map.getCell(x, y);
+            if (cell !== undefined && !cell.isFree) {
+                neighbors.push(cell);
+            }
+        }
+
+        for (let i = 1; i <= range; i++) {
+            useIfAlive(cell.position.x + range, cell.position.y + 0);
+            useIfAlive(cell.position.x + 0, cell.position.y + range);
+            useIfAlive(cell.position.x + 0, cell.position.y - range);
+            useIfAlive(cell.position.x - range, cell.position.y + 0);
+
+            useIfAlive(cell.position.x + range, cell.position.y + range);
+            useIfAlive(cell.position.x - range, cell.position.y + range);
+            useIfAlive(cell.position.x + range, cell.position.y - range);
+            useIfAlive(cell.position.x - range, cell.position.y - range);
+        }
+
+        return neighbors;
     }
-    
-    setBorders() {        
+
+    getLivingCellCount() {
+        return this.map.cells.filter(cell => !cell.isFree).length;
+    }
+
+    setBorders() {
         let cells = this.map.cells.filter(cell => !cell.isFree);
         let c = 0;
-        for(let cell of cells) {
-            let neighbors = this.getNeighbors(cell);
-            if(neighbors.length > 0) {  cell.isBorder = true; 
-                                        c++; }  
+        for (let cell of cells) {
+            let neighbors = this.getFreeNeighbors(cell);
+            if (neighbors.length > 0) {
+                cell.isBorder = true;
+                c++;
+            }
         }
         return c;
     }
-    
-    
+
+
     getBorders() {
         var p = [];
-        for(let pnt of this.map.cells.filter(cell => cell.isBorder)) {
+        for (let pnt of this.map.cells.filter(cell => cell.isBorder)) {
             p.push(new Position(pnt[0], pnt[1]));
         }
         return p;
@@ -100,19 +155,19 @@ class CellSystem {
     getAllCellsWithDistanceToCenter() {
         let cells = this.map.cells.filter(cell => !cell.isFree);
         let p = [];
-        for(let cell of cells) {
-                cell.distToCenter = lineDistance(cell.position, this.map.center);
-                p.push(cell.position);
-            }  
+        for (let cell of cells) {
+            cell.distToCenter = lineDistance(cell.position, this.map.center);
+            p.push(cell.position);
+        }
         return p;
     }
-    
+
     getAllCells() {
         return this.map.cells.filter(cell => !cell.isFree);
     }
-        
-    
-    
+
+
+
     /**
      * Convert a number to a color using hsl, with range definition.
      * Example: if min/max are 0/1, and i is 0.75, the color is closer to green.
@@ -122,42 +177,42 @@ class CellSystem {
      * param max (floating point, range 0 to 1, all i at and above this is green)
      */
     numberToColorHsl(i, min, max) {
-            var ratio = i;
-            if (min > 0 || max < 1) {
-                if (i < min) {
-                    ratio = 0;
-                } else if (i > max) {
-                    ratio = 1;
-                } else {
-                    var range = max - min;
-                    ratio = (i - min) / range;
-                }
+        var ratio = i;
+        if (min > 0 || max < 1) {
+            if (i < min) {
+                ratio = 0;
+            } else if (i > max) {
+                ratio = 1;
+            } else {
+                var range = max - min;
+                ratio = (i - min) / range;
             }
-
-            // as the function expects a value between 0 and 1, and red = 0� and green = 120�
-            // we convert the input to the appropriate hue value
-            var hue = ratio * 1.2 / 3.60;
-            //if (minMaxFactor!=1) hue /= minMaxFactor;
-            //console.log(hue);
-
-            // we convert hsl to rgb (saturation 100%, lightness 50%)
-            var rgb = this.hslToRgb(hue, 1, .5);
-            // we format to css value and return
-            return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
         }
-        /**
-         * http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
-         *
-         * Converts an HSL color value to RGB. Conversion formula
-         * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-         * Assumes h, s, and l are contained in the set [0, 1] and
-         * returns r, g, and b in the set [0, 255].
-         *
-         * @param   Number  h       The hue
-         * @param   Number  s       The saturation
-         * @param   Number  l       The lightness
-         * @return  Array           The RGB representation
-         */
+
+        // as the function expects a value between 0 and 1, and red = 0� and green = 120�
+        // we convert the input to the appropriate hue value
+        var hue = ratio * 1.2 / 3.60;
+        //if (minMaxFactor!=1) hue /= minMaxFactor;
+        //console.log(hue);
+
+        // we convert hsl to rgb (saturation 100%, lightness 50%)
+        var rgb = this.hslToRgb(hue, 1, .5);
+        // we format to css value and return
+        return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+    }
+    /**
+     * http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+     *
+     * Converts an HSL color value to RGB. Conversion formula
+     * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+     * Assumes h, s, and l are contained in the set [0, 1] and
+     * returns r, g, and b in the set [0, 255].
+     *
+     * @param   Number  h       The hue
+     * @param   Number  s       The saturation
+     * @param   Number  l       The lightness
+     * @return  Array           The RGB representation
+     */
     hslToRgb(h, s, l) {
         var r, g, b;
 

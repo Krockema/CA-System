@@ -12,7 +12,7 @@
              ng-attr-height="{{map.heightPx +1}}" ng-attr-width="{{map.widthPx + 1}}">
             <g ng-repeat="row in map.map.grid">
                 <rect ng-repeat="cell in row" ng-attr-x="{{cell.position.x * map.cellSize}}" ng-attr-y="{{cell.position.y * map.cellSize}}" ng-attr-width="{{map.cellSize}}" ng-attr-height="{{map.cellSize}}"
-                      ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,start:cell.isStart, goal:cell.isGoal}"
+                      ng-class="{blocked:cell.isBlocked,current:cell.isCurrent,closed:cell.isVisited,start:cell.isStart, goal:cell.isGoal, energyLow: cell.energyLevel >1 , energyMiddle : cell.energyLevel > 10, energyHigh : cell.energyLevel > 18}"
                    ng-mousedown="map.clickOnCell(cell)" ng-mouseover="map.mouseOverCell(cell, $event)" ng-attr-style="fill:{{cell.color}};"></rect>
             </g>
             <circle ng-attr-cx="{{map.map.center.x * map.cellSize}}" ng-attr-cy="{{map.map.center.y * map.cellSize}}" ng-attr-r="{{map.map.radius * map.cellSize}}" stroke="green" stroke-width="2" fill="transparent" />
@@ -41,6 +41,7 @@
               <input type="button" class="btn btn-default btn-block" ng-click="map.addObstaclesFromCenter()" value="Add from Center" />
               <button type="button" class="btn btn-default btn-block" data-ng-click="resetMap()">Reset</button>
               <button type="button" class="btn btn-default btn-block" ng-click="saveFile()">Save Results</button>
+              <input type="checkbox" ng-model="algorithm.energy"> <label> - Use Energylevel</label><br/>
               <br/>
         </form>
       </div>

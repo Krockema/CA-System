@@ -4,7 +4,12 @@ rect {
     fill: #FFF;
     shape-rendering: crispEdges;
 }
-
+/*.green{
+  color:green;
+}
+.blue{
+  color:blue;
+}*/
 rect:hover {
     fill: #DDD;
 }
@@ -35,6 +40,18 @@ rect.closed {
 
 rect.forced {
     fill: #C8F;
+}
+
+rect.energyLow {
+    fill: #70db70;
+}
+
+rect.energyMiddle {
+    fill: #33cc33;
+}
+
+rect.energyHigh {
+    fill: #248f24;
 }
 
 line {

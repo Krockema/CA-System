@@ -1,6 +1,6 @@
 #Daten einlesen
 CADataList <- list()
-for (i in seq(1,5)) {
+for (i in seq(1,5)){
 	str <- paste("../CA-Daten/CA_5p_", i, "r.txt", sep="")
 	CADataList[[i]] <- read.table(str, sep=";", header= TRUE)
 }

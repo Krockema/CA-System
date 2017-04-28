@@ -203,13 +203,14 @@ class Map {
 }
 
 class Cell {
-    constructor(row, col, border = false, cellType = CellType.Free, distanceToCenter = 0) {
+    constructor(row, col, border = false, cellType = CellType.Free, distanceToCenter = 0, energyLevel = 0.0) {
         this.position = new Position(col, row);
         this.cellType = cellType;
         this.border = border;
         this.distToCenter = distanceToCenter;
+        this.energyLevel = energyLevel;
     }
-    
+
     set type(cellType) {
         this.cellType = cellType;
     }
@@ -220,6 +221,10 @@ class Cell {
     
     set setDistToCenter(distanceToCenter) {
         this.distToCenter = distanceToCenter;
+    }
+
+    set setEnergyLevel(energyLevel) {
+        this.energyLevel = energyLevel;
     }
 
     get type() {
@@ -252,7 +257,7 @@ class Cell {
     }
 }
 
-var CellType = Object.freeze({
+const CellType = Object.freeze({
     Free: 0,
     Blocked: 1,
     Visited: 2,
