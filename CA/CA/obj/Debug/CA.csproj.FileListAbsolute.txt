@@ -1,0 +1,6 @@
+C:\Users\Maggo\Documents\CA-System\CA\CA\bin\Debug\CA.exe.config
+C:\Users\Maggo\Documents\CA-System\CA\CA\bin\Debug\CA.exe
+C:\Users\Maggo\Documents\CA-System\CA\CA\bin\Debug\CA.pdb
+C:\Users\Maggo\Documents\CA-System\CA\CA\obj\Debug\CA.csprojResolveAssemblyReference.cache
+C:\Users\Maggo\Documents\CA-System\CA\CA\obj\Debug\CA.exe
+C:\Users\Maggo\Documents\CA-System\CA\CA\obj\Debug\CA.pdb
