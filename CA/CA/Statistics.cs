@@ -16,6 +16,8 @@ namespace CA
         public static int CompletedGrowths;
         public static int CellCount;
 
+        public static List<double> Cellsizes = new List<double>();
+
         public static void ResetStatistics()
         {
             AttemptedMoves = 0;
@@ -25,6 +27,7 @@ namespace CA
             AttemptedGrowths = 0;
             CompletedGrowths = 0;
             CellCount = 0;
+            Cellsizes = new List<double>();
         }
     }
 }

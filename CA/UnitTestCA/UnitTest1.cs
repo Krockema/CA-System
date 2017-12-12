@@ -95,5 +95,74 @@ namespace UnitTestCA
 
             Assert.IsTrue(differenceOfDivisionProbability < 0.01);
         }
+
+        [TestMethod]
+        public void TestGrowthOnly()
+        {
+            int simulationCount = 100;
+            Globals.MovementProbability = 0.0;
+            Globals.DivisionProbability = 0.0;
+            Globals.GrowthProbability = 1.0;
+            Globals.StartCellSize = Globals.NodeCapacity / 10;
+            int attemptedGrowths = 0;
+            int completedGrowths = 0;
+
+            for (int i = 0; i < simulationCount; i++)
+            {
+                Statistics.ResetStatistics();
+                var generator = new DataGenerator(10, 1);
+                generator.InitializeGrid();
+                generator.InitializeColonyInCenter(2);
+                generator.Simulate();
+                attemptedGrowths += Statistics.AttemptedGrowths;
+                completedGrowths += Statistics.CompletedGrowths;
+            }
+
+            var oberservedGrowthProbability = (double)completedGrowths / attemptedGrowths;
+            var differenceOfGrowthProbability = Math.Abs(oberservedGrowthProbability - Globals.GrowthProbability);
+            Console.WriteLine("Tatsächliche Wachstumsrate: " + oberservedGrowthProbability + " Unterschied zur Vorgabe: " + differenceOfGrowthProbability);
+
+            Assert.IsTrue(differenceOfGrowthProbability < 0.01);
+        }
+
+        [TestMethod]
+        public void TestMovementAndDivision()
+        {
+            int simulationCount = 1000;
+            Globals.MovementProbability = 0.1;
+            Globals.DivisionProbability = 0.5;
+            Globals.GrowthProbability = 0;
+            int attemptedDivisions = 0;
+            int completedDivisions = 0;
+            int attemptedMovements = 0;
+            int completedMovements = 0;
+
+            for (int i = 0; i < simulationCount; i++)
+            {
+                Statistics.ResetStatistics();
+                var generator = new DataGenerator(10, 10);
+                generator.InitializeGrid();
+                generator.InitializeColonyInCenter(2);
+                generator.Simulate();
+                attemptedDivisions += Statistics.AttemptedDivisions;
+                completedDivisions += Statistics.CompletedDivisions;
+                attemptedMovements += Statistics.AttemptedMoves;
+                completedMovements += Statistics.CompletedMoves;
+
+                //generator.PrintSimulationState();
+            }
+            
+            var oberservedDivisionProbability = (double)completedDivisions / attemptedDivisions;
+            var differenceOfDivisionProbability = Math.Abs(oberservedDivisionProbability - Globals.DivisionProbability);
+            Console.WriteLine("Tatsächliche Teilungsrate: " + oberservedDivisionProbability + " Unterschied zur Vorgabe: " + differenceOfDivisionProbability);
+
+            var oberservedMovementProbability = (double)completedMovements / attemptedMovements;
+            var differenceOfMovementProbability = Math.Abs(oberservedMovementProbability - Globals.MovementProbability);
+            Console.WriteLine("Tatsächliche Bewegungsrate: " + oberservedMovementProbability + " Unterschied zur Vorgabe: " + differenceOfMovementProbability);
+
+
+            Assert.IsTrue(differenceOfDivisionProbability < 0.01 && differenceOfMovementProbability <0.01);
+        }
+
     }
 }

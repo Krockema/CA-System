@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 
 namespace CA
 {
@@ -6,15 +8,19 @@ namespace CA
     {
         static void Main(string[] args)
         {
-            var generator = new DataGenerator(6,4);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            var generator = new DataGenerator(Globals.GridSize,Globals.MCSCount);
+            generator.ClearDirectory(Globals.FilePathFieldOfViewState);
+            generator.ClearDirectory(Globals.FilePathStatistics);
+            generator.InitializeStatisticsFile();
             generator.InitializeGrid();
-            generator.InitializeColonyInCenter(3);
-            generator.PrintSimulationState();
+            generator.InititalizeColonyInFieldOfView();
+            //generator.InitializeColonyInCenter(20);
+            //generator.PrintSimulationState();
             //generator.SaveSimulationState();
             generator.Simulate();
-            //generator.SaveSimulationState();
             Console.WriteLine();
-            generator.PrintSimulationState();
+            //generator.PrintSimulationState();
 
             Console.WriteLine("Versuchte Bewegungen: " + Statistics.AttemptedMoves);
             Console.WriteLine("Durchgeführte Bewegungen: " + Statistics.CompletedMoves);

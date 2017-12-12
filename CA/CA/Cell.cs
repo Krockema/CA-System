@@ -14,25 +14,40 @@ namespace CA
         public Cell(Node parentNode)
         {
             ParentNode = parentNode;
-            Size = ParentNode.Capacity;
+            Size = Globals.StartCellSize;
+            ParentNode.Capacity -= Size;
             Statistics.CellCount++;
         }
 
-        public void Divide()
+        public Cell(Node parentNode, double size)
+        {
+            ParentNode = parentNode;
+            Size = size;
+            ParentNode.Capacity -= size;
+            Statistics.CellCount++;
+        }
+
+        public Cell Divide()
         {
             Statistics.AttemptedDivisions++;
-            if (Size / 2 >= Globals.MinCellSize)
+            if (Size *Globals.DivisionSizeReduction >= Globals.MinCellSize)
             {
                 var r = Globals.Random.NextDouble();
                 if (r <= Globals.DivisionProbability)
                 {
-                    Size = Size / 2;
-                    var child = new Cell(ParentNode);
-                    child.Size = Size;
+                    var oldSize = Size;
+                    var newSize = Size * Globals.DivisionSizeReduction;
+                    var sizeDiff = oldSize - newSize;
+                    Size = newSize;
+                    ParentNode.Capacity -= sizeDiff;
+                    var child = new Cell(ParentNode, sizeDiff);
                     ParentNode.Cells.Add(child);
                     Statistics.CompletedDivisions++;
+                    return child;
                 }
             }
+
+            return null;
         }
 
         public void Grow()
@@ -67,14 +82,16 @@ namespace CA
             if (r <= Globals.MovementProbability)
             {
                 var neighbours = ParentNode.GetNeighbours();
-                int ra = Globals.Random.Next(neighbours.Count); //TODO: Nur aus freien Nachbarn ziehen?
-                var randomNeighbour = neighbours[ra];
-
-                if (randomNeighbour.Capacity >= Size)
+                var freeNeighbours = neighbours.Where(x => x.Capacity >= Size).ToList();
+                if (freeNeighbours.Count > 0)
                 {
+                    int ra = Globals.Random.Next(freeNeighbours.Count); //TODO: Nur aus freien Nachbarn ziehen?
+                    var randomNeighbour = freeNeighbours[ra];
                     ParentNode.Cells.Remove(this);
+                    ParentNode.Capacity += this.Size;
                     randomNeighbour.Cells.Add(this);
                     ParentNode = randomNeighbour;
+                    ParentNode.Capacity -= this.Size;
                     Statistics.CompletedMoves++;
                 }
             }

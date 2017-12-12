@@ -55,7 +55,28 @@ namespace CA
                     var node = Grid.Nodes[i, j];
                     var cell = new Cell(node);
                     node.Cells.Add(cell);
+                    node.Capacity -= Globals.StartCellSize;
                     CellList.Add(cell);
+                }
+            }
+
+            return true;
+        }
+
+        public bool InititalizeColonyInFieldOfView()
+        {
+            int count = 0;
+
+            while (count < Globals.StartCellCount)
+            {
+                var node = GetRandomNodeInFieldOfView();
+                if (node.Capacity > Globals.StartCellSize)
+                {
+                    var cell = new Cell(node);
+                    node.Cells.Add(cell);
+                    node.Capacity -= Globals.StartCellSize;
+                    CellList.Add(cell);
+                    count++;
                 }
             }
 
@@ -66,7 +87,7 @@ namespace CA
         {
             for (int i = 0; i < MonteCarloSteps; i++)
             {
-                var cellCountAtBeginningOfStep = GetCellCount();
+                var cellCountAtBeginningOfStep = CellList.Count;
 
                 for (int j = 0; j < cellCountAtBeginningOfStep * 3; j++)
                 {
@@ -79,7 +100,11 @@ namespace CA
 
                             break;
                         case CellActions.Division:
-                            cell.Divide();
+                            var possibleNewCell = cell.Divide();
+                            if (possibleNewCell != null)
+                            {
+                                CellList.Add(possibleNewCell);
+                            }
                             break;
                         case CellActions.Growth:
                             cell.Grow();
@@ -88,12 +113,63 @@ namespace CA
                             break;
                     }
                 }
+
+                UpdateStatistics();
+                SaveSimulationState(i);
             }
         }
 
-        public void SaveSimulationState()
+        private void UpdateStatistics()
         {
-            string path = "mycsv.csv";
+            Statistics.Cellsizes = new List<double>();
+            foreach (var node in Grid.FieldOfView)
+            {
+                foreach (var cell in node.Cells)
+                {
+                    Statistics.Cellsizes.Add(cell.Size);
+                }
+            }
+        }
+
+        public void SaveSimulationState(int i)
+        {
+            //SaveFieldOfViewState(i);
+            SaveStatistics();
+        }
+
+        public void InitializeStatisticsFile()
+        {
+            var path = Globals.FilePathStatistics + "\\Statistics.csv";
+            var config = Globals.MCSCount + "," + Globals.MovementProbability + "," + Globals.DivisionProbability + "," + Globals.GrowthProbability + "," + Globals.GrowthPercentage;
+            config = string.Concat(config, Environment.NewLine);
+            File.AppendAllText(path, config);
+        }
+
+        private void SaveStatistics()
+        {
+            var path = Globals.FilePathStatistics + "\\Statistics.csv";
+            var enumerator = Statistics.Cellsizes
+                            .Select((s, i) => (i + 1) % Statistics.Cellsizes.Count == 0 ? string.Concat(s, Environment.NewLine) : string.Concat(s, ","));
+
+            
+            var item = String.Join("", enumerator.ToArray<string>());
+            File.AppendAllText(path, item);
+        }
+
+        public void ClearDirectory(string path)
+        {
+            DirectoryInfo di = new DirectoryInfo(path);
+            FileInfo[] files = di.GetFiles("*.csv");
+
+            foreach (var file in files)
+            {
+                file.Delete();
+            }
+        }
+
+        public void SaveFieldOfViewState(int step)
+        {
+            string path = Globals.FilePathFieldOfViewState + "\\" + step + ".csv";
 
             var enumerator = GetCellCountMap().Cast<int>()
                             .Select((s, i) => (i + 1) % GridSize == 0 ? string.Concat(s, Environment.NewLine) : string.Concat(s, ","));
@@ -129,22 +205,31 @@ namespace CA
             return result;
         }
 
-        private int GetCellCount()
+        private int[,] GetFieldOfViewCellCountMap()
         {
-            int cellCount = 0;
-
-            foreach (var node in Grid.Nodes)
+            int[,] result = new int[Grid.FieldofViewNodeCountWidth, Grid.FieldOfViewNodeCountHeight];
+            for (int i = 0; i < Grid.FieldofViewNodeCountWidth; i++)
             {
-                cellCount += node.Cells.Count;
+                for (int j = 0; j < Grid.FieldOfViewNodeCountHeight; j++)
+                {
+                    result[i, j] = Grid.FieldOfView[i, j].Cells.Count;
+                }
             }
 
-            return cellCount;
+            return result;
         }
 
         private Cell GetRandomCell()
         {
             int r = Globals.Random.Next(CellList.Count);
             return CellList[r];
+        }
+
+        private Node GetRandomNodeInFieldOfView()
+        {
+            int i = Globals.Random.Next(Grid.FieldofViewNodeCountWidth);
+            int j = Globals.Random.Next(Grid.FieldOfViewNodeCountHeight);
+            return Grid.FieldOfView[i, j];
         }
 
         private CellActions DetermineCellAction()
