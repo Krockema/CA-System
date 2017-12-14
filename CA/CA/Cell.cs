@@ -23,14 +23,13 @@ namespace CA
         {
             ParentNode = parentNode;
             Size = size;
-            ParentNode.Capacity -= size;
             Statistics.CellCount++;
         }
 
         public Cell Divide()
         {
             Statistics.AttemptedDivisions++;
-            if (Size *Globals.DivisionSizeReduction >= Globals.MinCellSize)
+            if (Size >= Globals.MinCellSize)
             {
                 var r = Globals.Random.NextDouble();
                 if (r <= Globals.DivisionProbability)
@@ -39,7 +38,6 @@ namespace CA
                     var newSize = Size * Globals.DivisionSizeReduction;
                     var sizeDiff = oldSize - newSize;
                     Size = newSize;
-                    ParentNode.Capacity -= sizeDiff;
                     var child = new Cell(ParentNode, sizeDiff);
                     ParentNode.Cells.Add(child);
                     Statistics.CompletedDivisions++;

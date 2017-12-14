@@ -14,6 +14,8 @@ namespace CA
         public static string FilePathFieldOfViewState = "C:\\Users\\Maggo\\Documents\\HTW\\FuE-Projekt\\Data";
         public static string FilePathStatistics = "C:\\Users\\Maggo\\Documents\\HTW\\FuE-Projekt\\Statistics";
 
+        public static bool SingleCellAnalysis = true;
+
         public static int MCSCount = 1200; //= 1 Tag
 
         public static double MovementProbability = 0; //Unbekannt

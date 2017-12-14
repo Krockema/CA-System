@@ -25,3 +25,4 @@ C:\Users\Maggo\Documents\CA-System\CA\UnitTestCA\bin\Debug\Microsoft.VisualStudi
 C:\Users\Maggo\Documents\CA-System\CA\UnitTestCA\obj\Debug\UnitTestCA.csprojResolveAssemblyReference.cache
 C:\Users\Maggo\Documents\CA-System\CA\UnitTestCA\obj\Debug\UnitTestCA.dll
 C:\Users\Maggo\Documents\CA-System\CA\UnitTestCA\obj\Debug\UnitTestCA.pdb
+C:\Users\Maggo\Documents\CA-System\CA\UnitTestCA\obj\Debug\UnitTestCA.csproj.CoreCompileInputs.cache

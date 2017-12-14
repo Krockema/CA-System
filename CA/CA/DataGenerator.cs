@@ -55,7 +55,6 @@ namespace CA
                     var node = Grid.Nodes[i, j];
                     var cell = new Cell(node);
                     node.Cells.Add(cell);
-                    node.Capacity -= Globals.StartCellSize;
                     CellList.Add(cell);
                 }
             }
@@ -67,6 +66,11 @@ namespace CA
         {
             int count = 0;
 
+            if (Globals.SingleCellAnalysis)
+            {
+                Globals.StartCellCount = 1;
+            }
+
             while (count < Globals.StartCellCount)
             {
                 var node = GetRandomNodeInFieldOfView();
@@ -74,7 +78,6 @@ namespace CA
                 {
                     var cell = new Cell(node);
                     node.Cells.Add(cell);
-                    node.Capacity -= Globals.StartCellSize;
                     CellList.Add(cell);
                     count++;
                 }
@@ -101,7 +104,7 @@ namespace CA
                             break;
                         case CellActions.Division:
                             var possibleNewCell = cell.Divide();
-                            if (possibleNewCell != null)
+                            if (possibleNewCell != null && !Globals.SingleCellAnalysis)
                             {
                                 CellList.Add(possibleNewCell);
                             }
@@ -122,11 +125,19 @@ namespace CA
         private void UpdateStatistics()
         {
             Statistics.Cellsizes = new List<double>();
-            foreach (var node in Grid.FieldOfView)
+
+            if (Globals.SingleCellAnalysis)
             {
-                foreach (var cell in node.Cells)
+                Statistics.Cellsizes.Add(CellList[0].Size);
+            }
+            else
+            {
+                foreach (var node in Grid.FieldOfView)
                 {
-                    Statistics.Cellsizes.Add(cell.Size);
+                    foreach (var cell in node.Cells)
+                    {
+                        Statistics.Cellsizes.Add(cell.Size);
+                    }
                 }
             }
         }
