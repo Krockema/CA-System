@@ -29,10 +29,10 @@ namespace CA
         public Cell Divide()
         {
             Statistics.AttemptedDivisions++;
-            if (Size >= Globals.MinCellSize)
+            if (!Globals.UseDivisionFunction && Size >= Globals.MinCellSize || Globals.UseDivisionFunction)
             {
                 var r = Globals.Random.NextDouble();
-                if (r <= Globals.DivisionProbability)
+                if (!Globals.UseDivisionFunction && r <= Globals.DivisionProbability || Globals.UseDivisionFunction && r <= DivisionFunction(Size))
                 {
                     var oldSize = Size;
                     var newSize = Size * Globals.DivisionSizeReduction;
@@ -51,13 +51,13 @@ namespace CA
         public void Grow()
         {
             Statistics.AttemptedGrowths++;
-            if (ParentNode.Capacity > 0)
+            if (!Globals.SingleCellAnalysis && ParentNode.Capacity > 0 || Globals.SingleCellAnalysis)
             {
                 var r = Globals.Random.NextDouble();
                 if (r <= Globals.GrowthProbability)
                 {
                     var gain = Size * Globals.GrowthPercentage;
-                    if (ParentNode.Capacity >= gain)
+                    if (!Globals.SingleCellAnalysis && ParentNode.Capacity >= gain || Globals.SingleCellAnalysis)
                     {
                         Size += gain;
                         ParentNode.Capacity -= gain;
@@ -93,6 +93,12 @@ namespace CA
                     Statistics.CompletedMoves++;
                 }
             }
+        }
+
+        private double DivisionFunction(double cellsize)
+        {
+            //return Math.Pow(cellsize, 4) / (Math.Pow(cellsize, 4) + Math.Pow(170, 4))/240;
+            return Math.Pow(cellsize, 4) / (Math.Pow(cellsize, 4) + Math.Pow(170, 4)) / 240 * 2 ;
         }
     }
 }

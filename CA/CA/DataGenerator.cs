@@ -83,6 +83,11 @@ namespace CA
                 }
             }
 
+            if (Globals.SingleCellWatchMode)
+            {
+                Globals.CelltoWatch = CellList[0];
+            }
+
             return true;
         }
 
@@ -126,26 +131,46 @@ namespace CA
         {
             Statistics.Cellsizes = new List<double>();
 
-            if (Globals.SingleCellAnalysis)
+            if (Globals.SingleCellWatchMode)
             {
-                Statistics.Cellsizes.Add(CellList[0].Size);
+                Statistics.Cellsizes.Add(Globals.CelltoWatch.Size);
             }
             else
             {
-                foreach (var node in Grid.FieldOfView)
+                if (Globals.SingleCellAnalysis)
                 {
-                    foreach (var cell in node.Cells)
+                    Statistics.Cellsizes.Add(CellList[0].Size);
+                }
+                else
+                {
+                    foreach (var node in Grid.FieldOfView)
                     {
-                        Statistics.Cellsizes.Add(cell.Size);
+                        foreach (var cell in node.Cells)
+                        {
+                            Statistics.Cellsizes.Add(cell.Size);
+                        }
                     }
                 }
-            }
+            } 
         }
 
         public void SaveSimulationState(int i)
         {
-            //SaveFieldOfViewState(i);
+            SaveFieldOfViewState(i);
             SaveStatistics();
+            SaveColonySize();
+        }
+
+        private void SaveColonySize()
+        {
+            var path = Globals.FilePathColonySize + "\\Colony.csv";
+            int size = 0;
+            foreach (var cell in CellList)
+            {
+                size += (int)cell.Size;
+            }
+            var item = string.Concat(size, Environment.NewLine);
+            File.AppendAllText(path, item);
         }
 
         public void InitializeStatisticsFile()

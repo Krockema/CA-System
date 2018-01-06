@@ -15,6 +15,7 @@ namespace CA
         public static int AttemptedGrowths;
         public static int CompletedGrowths;
         public static int CellCount;
+        public static int DivisionsInFieldOfView;
 
         public static List<double> Cellsizes = new List<double>();
 
@@ -28,6 +29,7 @@ namespace CA
             CompletedGrowths = 0;
             CellCount = 0;
             Cellsizes = new List<double>();
+            DivisionsInFieldOfView = 0;
         }
     }
 }
